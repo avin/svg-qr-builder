@@ -1,0 +1,6 @@
+@use "breakpoints" as bp;
+
+@forward "breakpoints";
+@forward "include-media/dist/include-media" hide $breakpoints with (
+  $breakpoints: bp.$breakpoints
+);

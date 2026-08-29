@@ -1,0 +1,76 @@
+{
+  "name": "react-app-template",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint --fix .",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
+    "check": "npm run typecheck && npm run lint && npm run format:check && npm run test:unit",
+    "typecheck": "tsc -b",
+    "test": "vitest",
+    "test:unit": "vitest run --passWithNoTests",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui --ui-port 9323",
+    "storybook": "storybook dev --port 8889 --no-open --https --ssl-cert node_modules/localhost-certs/files/server.crt --ssl-key node_modules/localhost-certs/files/server.key",
+    "prepare": "husky"
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^2.12.0",
+    "i18next": "^26.3.6",
+    "include-media": "^2.0.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "react-i18next": "^17.0.11",
+    "react-redux": "^9.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.62.1",
+    "@storybook/react-vite": "^10.5.5",
+    "@tailwindcss/vite": "^4.3.3",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.4",
+    "esbuild": "^0.28.1",
+    "husky": "^9.1.7",
+    "jsdom": "^30.0.1",
+    "lint-staged": "^17.3.0",
+    "localhost-certs": "^1.1.1",
+    "oxfmt": "^0.61.0",
+    "oxlint": "^1.76.0",
+    "sass": "^1.102.0",
+    "storybook": "^10.5.5",
+    "tailwindcss": "^4.3.3",
+    "typescript": "~6.0.2",
+    "vite": "^8.2.0",
+    "vite-plugin-localhost-certs": "^1.2.0",
+    "vitest": "^4.1.10"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,mjs,cjs}": [
+      "oxlint --fix",
+      "oxfmt"
+    ],
+    "*.{json,css,scss,md,html,yml,yaml}": [
+      "oxfmt"
+    ]
+  },
+  "engines": {
+    "node": ">=24.18.1",
+    "npm": ">=11.16.0"
+  },
+  "volta": {
+    "node": "24.18.1",
+    "npm": "11.16.0"
+  },
+  "packageManager": "npm@11.16.0"
+}
