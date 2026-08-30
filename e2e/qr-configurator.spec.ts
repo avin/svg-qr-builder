@@ -22,6 +22,20 @@ test.describe("выбор языка", () => {
     await expect(page.getByLabel("Payload")).toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("lang", "en");
   });
+
+  test("переключает направление слайдеров для арабского языка", async ({ page }) => {
+    await page.goto("/");
+
+    await page.getByRole("button", { name: "Выбрать язык" }).click();
+    await page.getByRole("menuitemradio", { name: "Arabic" }).click();
+
+    const size = page.getByRole("slider", { name: "حجم SVG" });
+    await size.press("Home");
+    await expect(size).toHaveValue("100");
+
+    await size.press("ArrowLeft");
+    await expect(size).toHaveValue("108");
+  });
 });
 
 test("обновляет QR-код через настройки нового API", async ({ page }) => {

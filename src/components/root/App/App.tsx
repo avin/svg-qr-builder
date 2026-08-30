@@ -1,8 +1,10 @@
+import { DirectionProvider } from "@base-ui/react/direction-provider";
 import { Menu } from "@base-ui/react/menu";
 import { IconCheck, IconWorld } from "@tabler/icons-react";
 import { useTranslation } from "react-i18next";
 import { QrConfigurator } from "@/components/pages/QrConfigurator/QrConfigurator";
 import config from "@/config";
+import { languageDirections } from "@/i18n/languages";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { changeSelectedLanguage } from "@/store/locale/localeSlice";
 import { languageSelector } from "@/store/locale/selectors";
@@ -56,14 +58,17 @@ function LanguageSelector() {
 
 export function App() {
   const { t } = useTranslation();
+  const language = useAppSelector(languageSelector);
 
   return (
-    <main>
-      <header className={styles.header}>
-        <h1>{t("svgQrBuilder")}</h1>
-        <LanguageSelector />
-      </header>
-      <QrConfigurator />
-    </main>
+    <DirectionProvider direction={languageDirections[language]}>
+      <main>
+        <header className={styles.header}>
+          <h1>{t("svgQrBuilder")}</h1>
+          <LanguageSelector />
+        </header>
+        <QrConfigurator />
+      </main>
+    </DirectionProvider>
   );
 }
