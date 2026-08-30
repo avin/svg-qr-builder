@@ -124,6 +124,8 @@ export function QrConfigurator({ title }: Props) {
   const [cornerRoundingMode, setCornerRoundingMode] = useState<RoundingMode>("linked");
   const svg = createQrSvg(content, errorCorrectionLevel, fill, size, rounding);
   const qrImageSrc = svg ? `data:image/svg+xml,${encodeURIComponent(svg)}` : null;
+  // oxlint-disable-next-line react-perf/jsx-no-new-object-as-prop -- Размер меняется вместе с состоянием.
+  const qrImageStyle = { width: size };
   function selectPreset(nextPresetName: PresetName) {
     setPresetName(nextPresetName);
 
@@ -366,6 +368,7 @@ export function QrConfigurator({ title }: Props) {
               alt={t("generatedQrCode")}
               width={size}
               height={size}
+              style={qrImageStyle}
             />
           ) : (
             <p role="alert">{t("qrCodeGenerationFailedTryShorterContent")}</p>

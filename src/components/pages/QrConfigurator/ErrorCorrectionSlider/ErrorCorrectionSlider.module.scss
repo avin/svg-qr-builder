@@ -28,7 +28,8 @@
 .track {
   position: relative;
   width: 100%;
-  height: 2px;
+  height: 4px;
+  border-radius: 999px;
   background: $rd-colors-gray-200;
 }
 

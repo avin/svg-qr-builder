@@ -21,6 +21,36 @@ test("обновляет QR-код через настройки нового AP
   await expect(qrCode).not.toHaveAttribute("src", initialSource!);
 });
 
+test("показывает выбранный размер SVG в пределах контейнера", async ({ page }) => {
+  await page.goto("/");
+
+  const qrCode = page.getByRole("img", { name: "Generated QR code" });
+  await expect(qrCode).toHaveAttribute("width", "480");
+  await expect(qrCode).toHaveCSS("width", "480px");
+
+  const size = page.getByRole("slider", { name: "SVG size" });
+  await size.press("End");
+
+  await expect(qrCode).toHaveAttribute("width", "1024");
+  await expect(qrCode).toHaveAttribute("height", "1024");
+  await expect
+    .poll(() =>
+      qrCode.evaluate((image) => ({
+        displayedWidth: image.getBoundingClientRect().width,
+        intrinsicWidth: (image as HTMLImageElement).naturalWidth,
+        containerWidth: image.parentElement!.getBoundingClientRect().width,
+      })),
+    )
+    .toMatchObject({ intrinsicWidth: 1024 });
+
+  const { displayedWidth, containerWidth } = await qrCode.evaluate((image) => ({
+    displayedWidth: image.getBoundingClientRect().width,
+    containerWidth: image.parentElement!.getBoundingClientRect().width,
+  }));
+  expect(displayedWidth).toBeLessThanOrEqual(containerWidth);
+  expect(displayedWidth).toBeLessThan(1024);
+});
+
 test("выбирает уровень коррекции ошибок на дискретном слайдере", async ({ page }) => {
   await page.goto("/");
 

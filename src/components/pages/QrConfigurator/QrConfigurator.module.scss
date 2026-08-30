@@ -299,7 +299,7 @@
 }
 .qrCode {
   box-sizing: border-box;
-  width: min(100%, 520px);
+  max-width: 100%;
   height: auto;
   aspect-ratio: 1;
   padding: clamp(8px, 3vw, 24px);
