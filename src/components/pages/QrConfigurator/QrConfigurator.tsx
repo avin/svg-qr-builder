@@ -228,8 +228,8 @@ export function QrConfigurator() {
   const [isBackgroundEnabled, setIsBackgroundEnabled] = useState(false);
   const [padding, setPadding] = useState(0);
   const [embeddedImage, setEmbeddedImage] = useState<EmbeddedImage | null>(null);
-  const [imagePadding, setImagePadding] = useState(12);
-  const [imageSize, setImageSize] = useState(20);
+  const [imagePadding, setImagePadding] = useState(5);
+  const [imageSize, setImageSize] = useState(30);
   const svg = createQrSvg(content, errorCorrectionLevel, fill, size, rounding, {
     background,
     isBackgroundEnabled,
