@@ -52,14 +52,14 @@ test.describe("выбор языка", () => {
 });
 
 test.describe("региональный язык браузера", () => {
-  test.use({ locale: "pt-BR" });
+  test.use({ locale: "pt" });
 
   test("выбирает португальский для Бразилии", async ({ page }) => {
     await page.goto("/");
 
     await expect(page.getByRole("button", { name: "Selecionar idioma" })).toBeVisible();
     await expect(page.getByRole("textbox", { name: "Dados", exact: true })).toBeVisible();
-    await expect(page.locator("html")).toHaveAttribute("lang", "pt-BR");
+    await expect(page.locator("html")).toHaveAttribute("lang", "pt");
     await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   });
 });

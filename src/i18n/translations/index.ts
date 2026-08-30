@@ -6,14 +6,14 @@ function t(
   ar: string,
   es: string,
   zh: string,
-  ptBR: string,
+  pt: string,
   de: string,
   fr: string,
   ja: string,
   hi: string,
   he: string,
 ): TranslationLeaf {
-  return { en, ru, ar, es, zh, "pt-BR": ptBR, de, fr, ja, hi, he };
+  return { en, ru, ar, es, zh, pt, de, fr, ja, hi, he };
 }
 
 function nativeLanguageName(name: string): TranslationLeaf {
@@ -52,7 +52,7 @@ export const translations: TranslationTree = {
   arabic: nativeLanguageName("العربية"),
   spanish: nativeLanguageName("Español"),
   simplifiedChinese: nativeLanguageName("简体中文"),
-  brazilianPortuguese: nativeLanguageName("Português"),
+  portuguese: nativeLanguageName("Português"),
   german: nativeLanguageName("Deutsch"),
   french: nativeLanguageName("Français"),
   japanese: nativeLanguageName("日本語"),

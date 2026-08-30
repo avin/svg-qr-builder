@@ -16,7 +16,7 @@ const languageLabelKeys = {
   ar: "arabic",
   es: "spanish",
   zh: "simplifiedChinese",
-  "pt-BR": "brazilianPortuguese",
+  pt: "portuguese",
   de: "german",
   fr: "french",
   ja: "japanese",

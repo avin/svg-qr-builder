@@ -15,19 +15,7 @@ function createStore() {
 describe("выбор языка", () => {
   beforeEach(() => {
     localStorage.clear();
-    config.availableLanguages = [
-      "en",
-      "zh",
-      "hi",
-      "es",
-      "ar",
-      "fr",
-      "pt-BR",
-      "ru",
-      "ja",
-      "de",
-      "he",
-    ];
+    config.availableLanguages = ["en", "zh", "hi", "es", "ar", "fr", "pt", "ru", "ja", "de", "he"];
     vi.spyOn(navigator, "languages", "get").mockReturnValue(["en-US"]);
     changeI18nLanguage.mockClear();
   });
@@ -52,7 +40,7 @@ describe("выбор языка", () => {
 
     await store.dispatch(setupLanguage());
 
-    expect(store.getState().locale.language).toBe("pt-BR");
+    expect(store.getState().locale.language).toBe("pt");
   });
 
   it("использует первый доступный язык при неизвестном языке браузера", async () => {
