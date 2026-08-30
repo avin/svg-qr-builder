@@ -402,10 +402,10 @@ export function QrConfigurator() {
               >
                 <Tabs.List className={styles.tabs} aria-label={t("roundingDataCells")}>
                   <Tabs.Tab className={styles.tab} value="linked">
-                    {t("linked")}
+                    {t("simple")}
                   </Tabs.Tab>
                   <Tabs.Tab className={styles.tab} value="manual">
-                    {t("manual")}
+                    {t("advanced")}
                   </Tabs.Tab>
                   <Tabs.Indicator className={styles.tabIndicator} />
                 </Tabs.List>
@@ -454,10 +454,10 @@ export function QrConfigurator() {
               >
                 <Tabs.List className={styles.tabs} aria-label={t("roundingCornerCells")}>
                   <Tabs.Tab className={styles.tab} value="linked">
-                    {t("linked")}
+                    {t("simple")}
                   </Tabs.Tab>
                   <Tabs.Tab className={styles.tab} value="manual">
-                    {t("manual")}
+                    {t("advanced")}
                   </Tabs.Tab>
                   <Tabs.Indicator className={styles.tabIndicator} />
                 </Tabs.List>
