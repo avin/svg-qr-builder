@@ -2,7 +2,7 @@ import type { Language } from "../languages";
 
 export const translations: Record<Language, Record<string, string>> = {
   en: {
-    qrCodeConfigurator: "QR code configurator",
+    qrCodeConfigurator: "SVG QR Builder",
     contentSettings: "Content",
     payload: "Payload",
     errorCorrectionLevel: "Error correction level",
@@ -36,7 +36,7 @@ export const translations: Record<Language, Record<string, string>> = {
     qrGenerationError: "The QR code could not be generated. Try shorter content.",
   },
   ru: {
-    qrCodeConfigurator: "Конфигуратор QR-кода",
+    qrCodeConfigurator: "SVG QR Builder",
     contentSettings: "Содержимое",
     payload: "Полезная нагрузка",
     errorCorrectionLevel: "Уровень коррекции ошибок",
@@ -70,7 +70,7 @@ export const translations: Record<Language, Record<string, string>> = {
     qrGenerationError: "Не удалось создать QR-код. Попробуйте сократить содержимое.",
   },
   ar: {
-    qrCodeConfigurator: "أداة إعداد رمز QR",
+    qrCodeConfigurator: "SVG QR Builder",
     contentSettings: "المحتوى",
     payload: "الحمولة",
     errorCorrectionLevel: "مستوى تصحيح الخطأ",
