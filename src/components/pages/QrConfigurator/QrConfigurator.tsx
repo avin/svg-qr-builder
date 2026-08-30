@@ -30,10 +30,6 @@ interface RoundingSettings {
   cornerCenterOuter: number;
 }
 
-interface Props {
-  title: string;
-}
-
 interface EmbeddedImage {
   name: string;
   src: string;
@@ -215,7 +211,7 @@ function getLinkedDataRounding(rounding: RoundingSettings) {
   return roundToTenths((rounding.dataOuter + rounding.dataInner) / 2);
 }
 
-export function QrConfigurator({ title }: Props) {
+export function QrConfigurator() {
   const { t } = useTranslation();
   const [content, setContent] = useState("https://avin.github.io/sexy-qr");
   const [errorCorrectionLevel, setErrorCorrectionLevel] = useState<ErrorCorrectionLevel>("M");
@@ -302,8 +298,6 @@ export function QrConfigurator({ title }: Props) {
 
   return (
     <section className={styles.page}>
-      <h1>{title}</h1>
-
       <div className={styles.workspace}>
         <form className={styles.controls} onSubmit={(event) => event.preventDefault()}>
           <div className={styles.controlGroup} aria-label={t("content")}>

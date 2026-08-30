@@ -13,6 +13,8 @@ const initialState: LocaleState = {
   language: "en",
 };
 
+const selectedLanguageStorageKey = "selectedLanguage";
+
 export const localeSlice = createSlice({
   name: "locale",
   initialState,
@@ -38,29 +40,28 @@ function getAvailableLanguage(
   return availableLanguages.find((language) => language === normalizedValue);
 }
 
-function resolveLanguage(availableLanguages: Language[]): Language {
-  const htmlFileLanguage =
-    availableLanguages.length > 0
-      ? new RegExp(`_(${availableLanguages.join("|")})\\.html`, "i").exec(
-          window.location.pathname,
-        )?.[1]
-      : undefined;
+function getBrowserLanguage(availableLanguages: Language[]): Language | undefined {
+  const preferredLanguages =
+    navigator.languages.length > 0 ? navigator.languages : [navigator.language];
 
-  const params = new URLSearchParams(window.location.search);
-  const urlLanguage = [params.get("language"), params.get("lang"), htmlFileLanguage]
-    .map((value) => getAvailableLanguage(value, availableLanguages))
+  return preferredLanguages
+    .map((language) => language.split("-")[0])
+    .map((language) => getAvailableLanguage(language, availableLanguages))
     .find((language): language is Language => language !== undefined);
+}
 
-  if (urlLanguage) {
-    return urlLanguage;
-  }
-
-  const sessionLanguage = getAvailableLanguage(
-    sessionStorage.getItem("language"),
+function resolveLanguage(availableLanguages: Language[]): Language {
+  const selectedLanguage = getAvailableLanguage(
+    localStorage.getItem(selectedLanguageStorageKey),
     availableLanguages,
   );
 
-  return sessionLanguage ?? availableLanguages[0] ?? initialState.language;
+  return (
+    selectedLanguage ??
+    getBrowserLanguage(availableLanguages) ??
+    availableLanguages[0] ??
+    initialState.language
+  );
 }
 
 async function applyLanguage(dispatch: AppDispatch, language: Language): Promise<void> {
@@ -70,6 +71,7 @@ async function applyLanguage(dispatch: AppDispatch, language: Language): Promise
 
 export function changeSelectedLanguage(language: Language) {
   return async (dispatch: AppDispatch): Promise<void> => {
+    localStorage.setItem(selectedLanguageStorageKey, language);
     await applyLanguage(dispatch, language);
   };
 }

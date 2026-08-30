@@ -2,6 +2,10 @@ import type { TranslationTree } from "../types";
 
 export const translations: TranslationTree = {
   svgQrBuilder: { en: "SVG QR Builder", ru: "SVG QR Builder", ar: "SVG QR Builder" },
+  selectLanguage: { en: "Select language", ru: "Выбрать язык", ar: "اختر اللغة" },
+  english: { en: "English", ru: "Английский", ar: "الإنجليزية" },
+  russian: { en: "Russian", ru: "Русский", ar: "الروسية" },
+  arabic: { en: "Arabic", ru: "Арабский", ar: "العربية" },
   content: { en: "Content", ru: "Содержимое", ar: "المحتوى" },
   payload: { en: "Payload", ru: "Полезная нагрузка", ar: "الحمولة" },
   errorCorrectionLevel: {

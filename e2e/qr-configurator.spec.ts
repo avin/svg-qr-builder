@@ -1,5 +1,29 @@
 import { expect, test } from "@playwright/test";
 
+test.describe("выбор языка", () => {
+  test.use({ locale: "ru-RU" });
+
+  test("определяет язык браузера и сохраняет ручной выбор", async ({ page }) => {
+    await page.goto("/");
+
+    const languageButton = page.getByRole("button", { name: "Выбрать язык" });
+    await expect(languageButton).toBeVisible();
+    await expect(page.getByLabel("Полезная нагрузка")).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("lang", "ru");
+
+    await languageButton.click();
+    const englishOption = page.getByRole("menuitemradio", { name: "English" });
+    await englishOption.click();
+    await expect(englishOption).not.toBeVisible();
+    await expect(page.getByLabel("Payload")).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+
+    await page.reload();
+    await expect(page.getByLabel("Payload")).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("lang", "en");
+  });
+});
+
 test("обновляет QR-код через настройки нового API", async ({ page }) => {
   await page.goto("/");
 
