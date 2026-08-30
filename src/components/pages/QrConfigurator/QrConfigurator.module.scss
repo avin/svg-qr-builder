@@ -173,12 +173,17 @@
   border: 0;
   border-radius: 5px;
   background: transparent;
+  box-shadow: 0 0 0 1px $rd-colors-gray-300;
   cursor: pointer;
 }
 .colorControl input::-webkit-color-swatch-wrapper {
   padding: 0;
 }
 .colorControl input::-webkit-color-swatch {
+  border: 0;
+  border-radius: 5px;
+}
+.colorControl input::-moz-color-swatch {
   border: 0;
   border-radius: 5px;
 }
