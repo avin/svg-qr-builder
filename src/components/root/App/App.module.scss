@@ -1,0 +1,89 @@
+@use "@/styles/kit" as *;
+
+.header {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding: 32px 16px 24px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
+
+.languageTrigger {
+  display: inline-grid;
+  box-sizing: border-box;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid $rd-colors-gray-300;
+  border-radius: 8px;
+  outline: 0;
+  background: $rd-colors-base-white;
+  color: $rd-colors-base-black;
+  cursor: pointer;
+  place-items: center;
+}
+
+.languageTrigger:hover {
+  border-color: $rd-colors-gray-400;
+}
+
+.languageTrigger:focus-visible {
+  box-shadow: 0 0 0 3px $rd-colors-brand-100;
+}
+
+.languagePositioner {
+  z-index: 20;
+  outline: 0;
+}
+
+.languagePopup {
+  min-width: 160px;
+  padding: 4px;
+  border: 1px solid $rd-colors-gray-200;
+  border-radius: 8px;
+  outline: 0;
+  background: $rd-colors-base-white;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 10%);
+}
+
+.languageItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 36px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  outline: 0;
+  color: $rd-colors-base-black;
+  font-size: 0.875rem;
+  cursor: default;
+  user-select: none;
+}
+
+.languageItem[data-highlighted] {
+  background: $rd-colors-gray-100;
+}
+
+.languageIndicator {
+  display: grid;
+  flex: none;
+  place-items: center;
+}
+
+@media (min-width: 768px) {
+  .header {
+    padding: 48px 24px 24px;
+  }
+}
