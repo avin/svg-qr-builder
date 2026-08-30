@@ -1,3 +1,4 @@
+import { Checkbox } from "@base-ui/react/checkbox";
 import { Select } from "@base-ui/react/select";
 import { Slider } from "@base-ui/react/slider";
 import { Tabs } from "@base-ui/react/tabs";
@@ -40,6 +41,7 @@ interface EmbeddedImage {
 
 interface ExportSettings {
   background: string;
+  isBackgroundEnabled: boolean;
   padding: number;
   embeddedImage: EmbeddedImage | null;
   imagePadding: number;
@@ -152,7 +154,11 @@ function createQrSvg(
     });
 
     const svgContent = qrSvg.svg.replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "");
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="100%" height="100%" fill="${exportSettings.background}"/><g transform="translate(${outerPadding} ${outerPadding})">${svgContent}</g></svg>`;
+    const background = exportSettings.isBackgroundEnabled
+      ? `<rect width="100%" height="100%" fill="${exportSettings.background}"/>`
+      : "";
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${background}<g transform="translate(${outerPadding} ${outerPadding})">${svgContent}</g></svg>`;
   } catch {
     return null;
   }
@@ -185,12 +191,14 @@ export function QrConfigurator({ title }: Props) {
   const [dataRoundingMode, setDataRoundingMode] = useState<RoundingMode>("linked");
   const [cornerRoundingMode, setCornerRoundingMode] = useState<RoundingMode>("linked");
   const [background, setBackground] = useState("#ffffff");
+  const [isBackgroundEnabled, setIsBackgroundEnabled] = useState(true);
   const [padding, setPadding] = useState(4);
   const [embeddedImage, setEmbeddedImage] = useState<EmbeddedImage | null>(null);
   const [imagePadding, setImagePadding] = useState(12);
   const [imageSize, setImageSize] = useState(20);
   const svg = createQrSvg(content, errorCorrectionLevel, fill, size, rounding, {
     background,
+    isBackgroundEnabled,
     padding,
     embeddedImage,
     imagePadding,
@@ -457,17 +465,34 @@ export function QrConfigurator({ title }: Props) {
             <div className={styles.exportControls}>
               <div className={styles.controlGroup}>
                 <div className={styles.controlGroupTitle}>{t("canvas")}</div>
-                <label className={styles.field}>
-                  <span>{t("backgroundColor")}</span>
+                <div className={styles.field}>
+                  <span className={styles.fieldLabel}>
+                    {t("backgroundColor")} (
+                    <label className={styles.checkboxLabel}>
+                      <Checkbox.Root
+                        className={styles.checkbox}
+                        checked={isBackgroundEnabled}
+                        onCheckedChange={setIsBackgroundEnabled}
+                      >
+                        <Checkbox.Indicator className={styles.checkboxIndicator}>
+                          <IconCheck size={12} stroke={2.5} />
+                        </Checkbox.Indicator>
+                      </Checkbox.Root>
+                      {t("enabled")}
+                    </label>
+                    )
+                  </span>
                   <span className={styles.colorControl}>
                     <input
                       type="color"
+                      aria-label={t("backgroundColor")}
                       value={background}
+                      disabled={!isBackgroundEnabled}
                       onChange={(event) => setBackground(event.target.value)}
                     />
                     <output dir="ltr">{background}</output>
                   </span>
-                </label>
+                </div>
                 <PercentControl
                   label={t("qrPadding")}
                   value={padding}

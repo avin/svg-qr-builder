@@ -98,6 +98,23 @@ test("не растягивает строки короткой группы н�
   expect(canvasTitleHeight).toBe(centerImageTitleHeight);
 });
 
+test("включает и выключает фон SVG", async ({ page }) => {
+  await page.goto("/");
+
+  const backgroundEnabled = page.getByRole("checkbox", { name: "Enabled" });
+  const backgroundColor = page.getByLabel("Background color");
+  const qrCode = page.getByRole("img", { name: "Generated QR code" });
+
+  await expect(backgroundEnabled).toBeChecked();
+  await expect(backgroundColor).toBeEnabled();
+  await expect(qrCode.locator(":scope > rect")).toHaveCount(1);
+
+  await backgroundEnabled.uncheck();
+
+  await expect(backgroundColor).toBeDisabled();
+  await expect(qrCode.locator(":scope > rect")).toHaveCount(0);
+});
+
 test("добавляет изображение с вырезом и скачивает SVG", async ({ page }) => {
   await page.goto("/");
 

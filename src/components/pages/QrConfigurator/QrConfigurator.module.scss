@@ -49,6 +49,44 @@
   font-size: 0.8125rem;
   font-weight: 500;
 }
+.fieldLabel {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+.checkbox {
+  position: relative;
+  inset-block-start: -1px;
+  display: inline-grid;
+  box-sizing: border-box;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 1px solid $rd-colors-gray-400;
+  border-radius: 3px;
+  outline: 0;
+  background: $rd-colors-base-white;
+  color: $rd-colors-base-white;
+  place-items: center;
+}
+.checkbox[data-checked] {
+  border-color: $rd-colors-base-black;
+  background: $rd-colors-base-black;
+}
+.checkbox:focus-visible {
+  box-shadow: 0 0 0 3px $rd-colors-brand-100;
+}
+.checkboxIndicator {
+  display: grid;
+  place-items: center;
+}
 .field textarea {
   box-sizing: border-box;
   width: 100%;
@@ -175,6 +213,12 @@
   background: transparent;
   box-shadow: 0 0 0 1px $rd-colors-gray-300;
   cursor: pointer;
+}
+.colorControl:has(input:disabled) {
+  opacity: 0.5;
+}
+.colorControl input:disabled {
+  cursor: not-allowed;
 }
 .colorControl input::-webkit-color-swatch-wrapper {
   padding: 0;

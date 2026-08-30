@@ -83,6 +83,7 @@ export const translations: TranslationTree = {
   downloadSvg: { en: "Download SVG", ru: "Скачать SVG", ar: "تنزيل SVG" },
   canvas: { en: "Canvas", ru: "Холст", ar: "اللوحة" },
   backgroundColor: { en: "Background color", ru: "Цвет фона", ar: "لون الخلفية" },
+  enabled: { en: "Enabled", ru: "Включено", ar: "مفعّل" },
   qrPadding: { en: "QR padding", ru: "Отступ QR-кода", ar: "هامش رمز QR" },
   centerImage: { en: "Center image", ru: "Изображение в центре", ar: "الصورة المركزية" },
   uploadImage: { en: "Upload image", ru: "Загрузить изображение", ar: "تحميل صورة" },
