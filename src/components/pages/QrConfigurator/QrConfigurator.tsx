@@ -5,6 +5,7 @@ import { IconCheck, IconChevronDown } from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { QRCode, QRSvg } from "sexy-qr";
+import { ErrorCorrectionSlider } from "./ErrorCorrectionSlider/ErrorCorrectionSlider";
 import styles from "./QrConfigurator.module.scss";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
@@ -47,9 +48,7 @@ const presetSettings: Record<BuiltInPresetName, RoundingSettings> = {
   },
 };
 
-const errorCorrectionLevels: ErrorCorrectionLevel[] = ["L", "M", "Q", "H"];
 const presetNames: PresetName[] = ["rounded", "square", "custom"];
-const errorCorrectionLabelKeys = { L: "low", M: "medium", Q: "quartile", H: "high" } as const;
 const presetLabelKeys = {
   square: "square",
   rounded: "rounded",
@@ -165,9 +164,7 @@ export function QrConfigurator({ title }: Props) {
 
       <div className={styles.workspace}>
         <form className={styles.controls} onSubmit={(event) => event.preventDefault()}>
-          <fieldset>
-            <legend>{t("content")}</legend>
-
+          <fieldset aria-label={t("content")}>
             <label className={styles.field}>
               <span>{t("payload")}</span>
               <textarea
@@ -178,47 +175,13 @@ export function QrConfigurator({ title }: Props) {
               />
             </label>
 
-            <Select.Root
+            <ErrorCorrectionSlider
               value={errorCorrectionLevel}
-              onValueChange={(value) => setErrorCorrectionLevel(value as ErrorCorrectionLevel)}
-            >
-              <Select.Label className={styles.fieldLabel}>{t("errorCorrectionLevel")}</Select.Label>
-              <Select.Trigger className={styles.selectTrigger}>
-                <Select.Value>
-                  {(value: ErrorCorrectionLevel) =>
-                    `${value} — ${t(errorCorrectionLabelKeys[value])}`
-                  }
-                </Select.Value>
-                <Select.Icon className={styles.selectIcon}>
-                  <IconChevronDown size={16} stroke={1.75} />
-                </Select.Icon>
-              </Select.Trigger>
-              <Select.Portal>
-                <Select.Positioner
-                  className={styles.selectPositioner}
-                  alignItemWithTrigger={false}
-                  sideOffset={6}
-                >
-                  <Select.Popup className={styles.selectPopup}>
-                    {errorCorrectionLevels.map((level) => (
-                      <Select.Item className={styles.selectItem} key={level} value={level}>
-                        <Select.ItemIndicator className={styles.selectItemIndicator}>
-                          <IconCheck size={14} stroke={2} />
-                        </Select.ItemIndicator>
-                        <Select.ItemText className={styles.selectItemText}>
-                          {level} — {t(errorCorrectionLabelKeys[level])}
-                        </Select.ItemText>
-                      </Select.Item>
-                    ))}
-                  </Select.Popup>
-                </Select.Positioner>
-              </Select.Portal>
-            </Select.Root>
+              onChange={setErrorCorrectionLevel}
+            />
           </fieldset>
 
-          <fieldset>
-            <legend>{t("appearance")}</legend>
-
+          <fieldset aria-label={t("appearance")}>
             <label className={styles.field}>
               <span>{t("qrColor")}</span>
               <span className={styles.colorControl}>
@@ -246,9 +209,7 @@ export function QrConfigurator({ title }: Props) {
             </label>
           </fieldset>
 
-          <fieldset>
-            <legend>{t("rounding")}</legend>
-
+          <fieldset aria-label={t("rounding")}>
             <Select.Root
               value={presetName}
               onValueChange={(value) => selectPreset(value as PresetName)}
@@ -397,8 +358,7 @@ export function QrConfigurator({ title }: Props) {
           </fieldset>
         </form>
 
-        <section className={styles.preview} aria-labelledby="qr-preview-title">
-          <h2 id="qr-preview-title">{t("preview")}</h2>
+        <section className={styles.preview} aria-label={t("preview")}>
           {qrImageSrc ? (
             <img
               className={styles.qrCode}

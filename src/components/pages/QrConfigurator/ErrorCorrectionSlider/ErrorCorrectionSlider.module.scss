@@ -1,0 +1,97 @@
+@use "@/styles/kit" as *;
+
+.field {
+  display: grid;
+  gap: 8px;
+  color: $rd-colors-gray-700;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.label output {
+  color: $rd-colors-base-black;
+}
+
+.slider {
+  padding-block-start: 4px;
+}
+
+.control {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.track {
+  position: relative;
+  width: 100%;
+  height: 2px;
+  background: $rd-colors-gray-200;
+}
+
+.markers {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: center;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.marker {
+  justify-self: center;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border: 1px solid $rd-colors-gray-300;
+  border-radius: 50%;
+  background: $rd-colors-base-white;
+}
+
+.thumb {
+  z-index: 1;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 2px solid $rd-colors-base-black;
+  border-radius: 50%;
+  outline: 0;
+  background: $rd-colors-base-black;
+  transition:
+    box-shadow 120ms,
+    inset-inline-start 120ms;
+}
+
+.thumb:hover {
+  box-shadow: 0 0 0 3px $rd-colors-gray-200;
+}
+
+.thumb:focus-visible {
+  box-shadow:
+    0 0 0 3px $rd-colors-brand-100,
+    0 0 0 1px $rd-colors-brand-700;
+}
+
+.positions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  color: $rd-colors-gray-700;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.positions [data-selected] {
+  color: $rd-colors-base-black;
+  font-weight: 650;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb {
+    transition: none;
+  }
+}

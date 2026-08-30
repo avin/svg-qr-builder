@@ -46,14 +46,14 @@
 }
 .field {
   display: grid;
-  gap: 8px;
+  gap: 4px;
   color: $rd-colors-gray-700;
   font-size: 0.8125rem;
   font-weight: 500;
 }
 .fieldLabel {
   display: block;
-  margin-block-end: 8px;
+  margin-block-end: 4px;
   color: $rd-colors-gray-700;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -200,6 +200,9 @@
 .roundingControlGroup {
   padding-block-start: 2px !important;
 }
+.roundingControlGroup legend {
+  margin-block-end: 2px;
+}
 .tabs {
   position: relative;
   display: grid;
@@ -293,12 +296,6 @@
   align-content: start;
   justify-items: center;
   padding: 20px;
-}
-.preview h2 {
-  justify-self: start;
-  margin: 0 0 24px;
-  font-size: 0.875rem;
-  font-weight: 650;
 }
 .qrCode {
   box-sizing: border-box;

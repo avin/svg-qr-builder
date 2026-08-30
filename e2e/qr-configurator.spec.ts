@@ -21,6 +21,27 @@ test("обновляет QR-код через настройки нового AP
   await expect(qrCode).not.toHaveAttribute("src", initialSource!);
 });
 
+test("выбирает уровень коррекции ошибок на дискретном слайдере", async ({ page }) => {
+  await page.goto("/");
+
+  const qrCode = page.getByRole("img", { name: "Generated QR code" });
+  const initialSource = await qrCode.getAttribute("src");
+  const errorCorrection = page.getByRole("slider", { name: "Error correction level" });
+
+  await expect(errorCorrection).toHaveValue("3");
+  await expect(errorCorrection).toHaveAttribute("aria-valuetext", "M — Medium");
+  await expect(page.getByText("Error correction level: M — Medium", { exact: true })).toBeVisible();
+
+  await errorCorrection.press("ArrowRight");
+
+  await expect(errorCorrection).toHaveValue("5");
+  await expect(errorCorrection).toHaveAttribute("aria-valuetext", "Q — Quartile");
+  await expect(
+    page.getByText("Error correction level: Q — Quartile", { exact: true }),
+  ).toBeVisible();
+  await expect(qrCode).not.toHaveAttribute("src", initialSource!);
+});
+
 test("показывает настройки профиля Rounded как в макете", async ({ page }) => {
   await page.goto("/");
 
