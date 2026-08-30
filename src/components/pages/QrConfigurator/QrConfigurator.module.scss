@@ -32,29 +32,19 @@
   align-content: start;
   padding: 20px;
 }
-.controls fieldset {
+.controlGroup {
   display: grid;
   gap: 14px;
+  align-content: start;
   min-inline-size: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
 }
-.controls legend {
-  margin-block-end: 12px;
+.controlGroupTitle {
   font-size: 0.875rem;
   font-weight: 650;
 }
 .field {
   display: grid;
   gap: 4px;
-  color: $rd-colors-gray-700;
-  font-size: 0.8125rem;
-  font-weight: 500;
-}
-.fieldLabel {
-  display: block;
-  margin-block-end: 4px;
   color: $rd-colors-gray-700;
   font-size: 0.8125rem;
   font-weight: 500;
@@ -199,10 +189,10 @@
   text-transform: uppercase;
 }
 .roundingControlGroup {
+  display: grid;
+  gap: 14px;
+  min-inline-size: 0;
   padding-block-start: 2px !important;
-}
-.roundingControlGroup legend {
-  margin-block-end: 2px;
 }
 .tabs {
   position: relative;
@@ -321,33 +311,12 @@
 .exportPanel {
   padding: 20px;
 }
-.panelHeading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-block-end: 18px;
-}
-.panelHeading h2 {
-  margin: 0;
-  font-size: 1rem;
-}
 .exportControls {
   display: grid;
   gap: 20px;
 }
-.exportControls fieldset {
-  display: grid;
+.exportControls .controlGroup {
   gap: 12px;
-  min-width: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-.exportControls legend {
-  margin-block-end: 8px;
-  font-size: 0.875rem;
-  font-weight: 650;
 }
 .primaryButton,
 .fileButton,
@@ -372,6 +341,14 @@
   border-color: $rd-colors-base-black;
   background: $rd-colors-base-black;
   color: $rd-colors-base-white;
+}
+.downloadButton {
+  position: absolute;
+  z-index: 1;
+  inset-block-end: 20px;
+  inset-inline-end: 20px;
+  min-inline-size: 38px;
+  padding: 8px;
 }
 .fileButton {
   min-width: 0;
@@ -432,6 +409,10 @@
     inset: 24px;
     max-width: calc(100% - 48px);
     max-height: calc(100% - 48px);
+  }
+  .downloadButton {
+    inset-block-end: 24px;
+    inset-inline-end: 24px;
   }
   .exportControls {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

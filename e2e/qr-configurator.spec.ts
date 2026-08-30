@@ -84,6 +84,20 @@ test("сохраняет высоту предпросмотра и выравн
   expect(Math.abs(controlsBottom - exportBottom)).toBeLessThanOrEqual(1);
 });
 
+test("не растягивает строки короткой группы настроек", async ({ page }) => {
+  await page.goto("/");
+
+  const [canvasTitleHeight, centerImageTitleHeight] = await Promise.all(
+    ["Canvas", "Center image"].map((title) =>
+      page
+        .getByText(title, { exact: true })
+        .evaluate((heading) => heading.getBoundingClientRect().height),
+    ),
+  );
+
+  expect(canvasTitleHeight).toBe(centerImageTitleHeight);
+});
+
 test("добавляет изображение с вырезом и скачивает SVG", async ({ page }) => {
   await page.goto("/");
 

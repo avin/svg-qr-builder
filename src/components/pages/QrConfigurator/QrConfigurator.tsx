@@ -239,7 +239,7 @@ export function QrConfigurator({ title }: Props) {
 
       <div className={styles.workspace}>
         <form className={styles.controls} onSubmit={(event) => event.preventDefault()}>
-          <fieldset aria-label={t("content")}>
+          <div className={styles.controlGroup} aria-label={t("content")}>
             <label className={styles.field}>
               <span>{t("payload")}</span>
               <textarea
@@ -254,9 +254,9 @@ export function QrConfigurator({ title }: Props) {
               value={errorCorrectionLevel}
               onChange={setErrorCorrectionLevel}
             />
-          </fieldset>
+          </div>
 
-          <fieldset aria-label={t("appearance")}>
+          <div className={styles.controlGroup} aria-label={t("appearance")}>
             <label className={styles.field}>
               <span>{t("qrColor")}</span>
               <span className={styles.colorControl}>
@@ -282,20 +282,22 @@ export function QrConfigurator({ title }: Props) {
                 onChange={setSize}
               />
             </label>
-          </fieldset>
+          </div>
 
-          <fieldset aria-label={t("rounding")}>
+          <div className={styles.controlGroup} aria-label={t("rounding")}>
             <Select.Root
               value={presetName}
               onValueChange={(value) => selectPreset(value as PresetName)}
             >
-              <Select.Label className={styles.fieldLabel}>{t("roundingProfile")}</Select.Label>
-              <Select.Trigger className={styles.selectTrigger}>
-                <Select.Value>{(value: PresetName) => t(presetLabelKeys[value])}</Select.Value>
-                <Select.Icon className={styles.selectIcon}>
-                  <IconChevronDown size={16} stroke={1.75} />
-                </Select.Icon>
-              </Select.Trigger>
+              <div className={styles.field}>
+                <Select.Label>{t("roundingProfile")}</Select.Label>
+                <Select.Trigger className={styles.selectTrigger}>
+                  <Select.Value>{(value: PresetName) => t(presetLabelKeys[value])}</Select.Value>
+                  <Select.Icon className={styles.selectIcon}>
+                    <IconChevronDown size={16} stroke={1.75} />
+                  </Select.Icon>
+                </Select.Trigger>
+              </div>
               <Select.Portal>
                 <Select.Positioner
                   className={styles.selectPositioner}
@@ -318,8 +320,8 @@ export function QrConfigurator({ title }: Props) {
               </Select.Portal>
             </Select.Root>
 
-            <fieldset className={styles.roundingControlGroup}>
-              <legend>{t("dataRoundingControls")}</legend>
+            <div className={styles.roundingControlGroup}>
+              <div className={styles.controlGroupTitle}>{t("dataRoundingControls")}</div>
               <Tabs.Root
                 value={dataRoundingMode}
                 onValueChange={(value) => setDataRoundingMode(value as RoundingMode)}
@@ -369,9 +371,9 @@ export function QrConfigurator({ title }: Props) {
                   />
                 </div>
               )}
-            </fieldset>
-            <fieldset className={styles.roundingControlGroup}>
-              <legend>{t("cornerRoundingControls")}</legend>
+            </div>
+            <div className={styles.roundingControlGroup}>
+              <div className={styles.controlGroupTitle}>{t("cornerRoundingControls")}</div>
               <Tabs.Root
                 value={cornerRoundingMode}
                 onValueChange={(value) => setCornerRoundingMode(value as RoundingMode)}
@@ -429,8 +431,8 @@ export function QrConfigurator({ title }: Props) {
                   />
                 </div>
               )}
-            </fieldset>
-          </fieldset>
+            </div>
+          </div>
         </form>
 
         <div className={styles.outputColumn}>
@@ -440,23 +442,21 @@ export function QrConfigurator({ title }: Props) {
             ) : (
               <p role="alert">{t("qrCodeGenerationFailedTryShorterContent")}</p>
             )}
+            <button
+              className={`${styles.primaryButton} ${styles.downloadButton}`}
+              type="button"
+              title={t("downloadSvg")}
+              aria-label={t("downloadSvg")}
+              disabled={!svg}
+              onClick={() => downloadSvg(svg)}
+            >
+              <IconDownload size={17} stroke={1.8} />
+            </button>
           </section>
-          <section className={styles.exportPanel} aria-labelledby="export-settings-title">
-            <div className={styles.panelHeading}>
-              <h2 id="export-settings-title">{t("exportSettings")}</h2>
-              <button
-                className={styles.primaryButton}
-                type="button"
-                disabled={!svg}
-                onClick={() => downloadSvg(svg)}
-              >
-                <IconDownload size={17} stroke={1.8} />
-                {t("downloadSvg")}
-              </button>
-            </div>
+          <section className={styles.exportPanel} aria-label={t("exportSettings")}>
             <div className={styles.exportControls}>
-              <fieldset>
-                <legend>{t("canvas")}</legend>
+              <div className={styles.controlGroup}>
+                <div className={styles.controlGroupTitle}>{t("canvas")}</div>
                 <label className={styles.field}>
                   <span>{t("backgroundColor")}</span>
                   <span className={styles.colorControl}>
@@ -474,9 +474,9 @@ export function QrConfigurator({ title }: Props) {
                   max={20}
                   onChange={setPadding}
                 />
-              </fieldset>
-              <fieldset>
-                <legend>{t("centerImage")}</legend>
+              </div>
+              <div className={styles.controlGroup}>
+                <div className={styles.controlGroupTitle}>{t("centerImage")}</div>
                 <div className={styles.imageActions}>
                   <label className={styles.fileButton}>
                     <IconUpload size={17} stroke={1.8} />
@@ -504,16 +504,16 @@ export function QrConfigurator({ title }: Props) {
                   label={t("imageSize")}
                   value={imageSize}
                   min={8}
-                  max={30}
+                  max={50}
                   onChange={setImageSize}
                 />
                 <PercentControl
                   label={t("imagePadding")}
                   value={imagePadding}
-                  max={50}
+                  max={20}
                   onChange={setImagePadding}
                 />
-              </fieldset>
+              </div>
             </div>
           </section>
         </div>
