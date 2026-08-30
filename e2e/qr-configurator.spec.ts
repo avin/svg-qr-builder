@@ -10,12 +10,14 @@ test("обновляет QR-код через настройки нового AP
   await page.getByLabel("Payload").fill("https://example.com/new-value");
   await expect(qrCode).not.toHaveAttribute("src", initialSource!);
 
-  await page.getByLabel("Rounding profile").selectOption("square");
+  const roundingProfile = page.getByRole("combobox", { name: "Rounding profile" });
+  await roundingProfile.click();
+  await page.getByRole("option", { name: "Square", exact: true }).click();
   const dataRounding = page.getByRole("slider", { name: "Data corner rounding" });
   await expect(dataRounding).toHaveValue("0");
 
   await dataRounding.press("ArrowRight");
-  await expect(page.getByLabel("Rounding profile")).toHaveValue("custom");
+  await expect(roundingProfile).toContainText("Custom");
   await expect(qrCode).not.toHaveAttribute("src", initialSource!);
 });
 

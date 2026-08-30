@@ -1,3 +1,7 @@
+import { Select } from "@base-ui/react/select";
+import { Slider } from "@base-ui/react/slider";
+import { Tabs } from "@base-ui/react/tabs";
+import { IconCheck, IconChevronDown } from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { QRCode, QRSvg, QRSvgPresets } from "sexy-qr";
@@ -24,6 +28,23 @@ const cornerRadiusMaximums = {
   ringOuter: 7,
   ringInner: 5,
   centerOuter: 3,
+} as const;
+
+const errorCorrectionLevels: ErrorCorrectionLevel[] = ["L", "M", "Q", "H"];
+const presetNames: PresetName[] = [
+  "square",
+  "rounded",
+  "circleCornerBlocks",
+  "roundedWithCircleCornerBlocks",
+  "custom",
+];
+const errorCorrectionLabelKeys = { L: "low", M: "medium", Q: "quartile", H: "high" } as const;
+const presetLabelKeys = {
+  square: "squareProfile",
+  rounded: "roundedProfile",
+  circleCornerBlocks: "circleCornerBlocksProfile",
+  roundedWithCircleCornerBlocks: "roundedWithCircleCornerBlocksProfile",
+  custom: "customProfile",
 } as const;
 
 function roundToTenths(value: number) {
@@ -103,7 +124,6 @@ export function QrConfigurator({ title }: Props) {
   const [cornerRoundingMode, setCornerRoundingMode] = useState<RoundingMode>("linked");
   const svg = createQrSvg(content, errorCorrectionLevel, fill, size, rounding);
   const qrImageSrc = svg ? `data:image/svg+xml,${encodeURIComponent(svg)}` : null;
-
   function selectPreset(nextPresetName: PresetName) {
     setPresetName(nextPresetName);
 
@@ -157,20 +177,42 @@ export function QrConfigurator({ title }: Props) {
               />
             </label>
 
-            <label className={styles.field}>
-              <span>{t("errorCorrectionLevel")}</span>
-              <select
-                value={errorCorrectionLevel}
-                onChange={(event) =>
-                  setErrorCorrectionLevel(event.target.value as ErrorCorrectionLevel)
-                }
-              >
-                <option value="L">L — {t("low")}</option>
-                <option value="M">M — {t("medium")}</option>
-                <option value="Q">Q — {t("quartile")}</option>
-                <option value="H">H — {t("high")}</option>
-              </select>
-            </label>
+            <Select.Root
+              value={errorCorrectionLevel}
+              onValueChange={(value) => setErrorCorrectionLevel(value as ErrorCorrectionLevel)}
+            >
+              <Select.Label className={styles.fieldLabel}>{t("errorCorrectionLevel")}</Select.Label>
+              <Select.Trigger className={styles.selectTrigger}>
+                <Select.Value>
+                  {(value: ErrorCorrectionLevel) =>
+                    `${value} — ${t(errorCorrectionLabelKeys[value])}`
+                  }
+                </Select.Value>
+                <Select.Icon className={styles.selectIcon}>
+                  <IconChevronDown size={16} stroke={1.75} />
+                </Select.Icon>
+              </Select.Trigger>
+              <Select.Portal>
+                <Select.Positioner
+                  className={styles.selectPositioner}
+                  alignItemWithTrigger={false}
+                  sideOffset={6}
+                >
+                  <Select.Popup className={styles.selectPopup}>
+                    {errorCorrectionLevels.map((level) => (
+                      <Select.Item className={styles.selectItem} key={level} value={level}>
+                        <Select.ItemIndicator className={styles.selectItemIndicator}>
+                          <IconCheck size={14} stroke={2} />
+                        </Select.ItemIndicator>
+                        <Select.ItemText className={styles.selectItemText}>
+                          {level} — {t(errorCorrectionLabelKeys[level])}
+                        </Select.ItemText>
+                      </Select.Item>
+                    ))}
+                  </Select.Popup>
+                </Select.Positioner>
+              </Select.Portal>
+            </Select.Root>
           </fieldset>
 
           <fieldset>
@@ -192,13 +234,13 @@ export function QrConfigurator({ title }: Props) {
               <span>
                 {t("svgSize")}: <output>{size} px</output>
               </span>
-              <input
-                type="range"
-                min="160"
-                max="1024"
-                step="16"
+              <RangeControl
+                label={t("svgSize")}
+                min={160}
+                max={1024}
+                step={16}
                 value={size}
-                onChange={(event) => setSize(event.target.valueAsNumber)}
+                onChange={setSize}
               />
             </label>
           </fieldset>
@@ -206,48 +248,55 @@ export function QrConfigurator({ title }: Props) {
           <fieldset>
             <legend>{t("roundingSettings")}</legend>
 
-            <label className={styles.field}>
-              <span>{t("roundingProfile")}</span>
-              <select
-                value={presetName}
-                onChange={(event) => selectPreset(event.target.value as PresetName)}
-              >
-                <option value="square">{t("squareProfile")}</option>
-                <option value="rounded">{t("roundedProfile")}</option>
-                <option value="circleCornerBlocks">{t("circleCornerBlocksProfile")}</option>
-                <option value="roundedWithCircleCornerBlocks">
-                  {t("roundedWithCircleCornerBlocksProfile")}
-                </option>
-                <option value="custom">{t("customProfile")}</option>
-              </select>
-            </label>
+            <Select.Root
+              value={presetName}
+              onValueChange={(value) => selectPreset(value as PresetName)}
+            >
+              <Select.Label className={styles.fieldLabel}>{t("roundingProfile")}</Select.Label>
+              <Select.Trigger className={styles.selectTrigger}>
+                <Select.Value>{(value: PresetName) => t(presetLabelKeys[value])}</Select.Value>
+                <Select.Icon className={styles.selectIcon}>
+                  <IconChevronDown size={16} stroke={1.75} />
+                </Select.Icon>
+              </Select.Trigger>
+              <Select.Portal>
+                <Select.Positioner
+                  className={styles.selectPositioner}
+                  alignItemWithTrigger={false}
+                  sideOffset={6}
+                >
+                  <Select.Popup className={styles.selectPopup}>
+                    {presetNames.map((preset) => (
+                      <Select.Item className={styles.selectItem} key={preset} value={preset}>
+                        <Select.ItemIndicator className={styles.selectItemIndicator}>
+                          <IconCheck size={14} stroke={2} />
+                        </Select.ItemIndicator>
+                        <Select.ItemText className={styles.selectItemText}>
+                          {t(presetLabelKeys[preset])}
+                        </Select.ItemText>
+                      </Select.Item>
+                    ))}
+                  </Select.Popup>
+                </Select.Positioner>
+              </Select.Portal>
+            </Select.Root>
 
             <fieldset className={styles.roundingControlGroup}>
               <legend>{t("dataRoundingMode")}</legend>
-              <div className={styles.tabs} role="tablist" aria-label={t("dataRoundingMode")}>
-                <button
-                  type="button"
-                  role="tab"
-                  id="linked-data-rounding-tab"
-                  aria-controls="linked-data-rounding-panel"
-                  aria-selected={dataRoundingMode === "linked"}
-                  tabIndex={dataRoundingMode === "linked" ? 0 : -1}
-                  onClick={() => setDataRoundingMode("linked")}
-                >
-                  {t("linkedCornerRounding")}
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  id="manual-data-rounding-tab"
-                  aria-controls="manual-data-rounding-panel"
-                  aria-selected={dataRoundingMode === "manual"}
-                  tabIndex={dataRoundingMode === "manual" ? 0 : -1}
-                  onClick={() => setDataRoundingMode("manual")}
-                >
-                  {t("manualCornerRounding")}
-                </button>
-              </div>
+              <Tabs.Root
+                value={dataRoundingMode}
+                onValueChange={(value) => setDataRoundingMode(value as RoundingMode)}
+              >
+                <Tabs.List className={styles.tabs} aria-label={t("dataRoundingMode")}>
+                  <Tabs.Tab className={styles.tab} value="linked">
+                    {t("linkedCornerRounding")}
+                  </Tabs.Tab>
+                  <Tabs.Tab className={styles.tab} value="manual">
+                    {t("manualCornerRounding")}
+                  </Tabs.Tab>
+                  <Tabs.Indicator className={styles.tabIndicator} />
+                </Tabs.List>
+              </Tabs.Root>
 
               {dataRoundingMode === "linked" ? (
                 <div
@@ -286,30 +335,20 @@ export function QrConfigurator({ title }: Props) {
             </fieldset>
             <fieldset className={styles.roundingControlGroup}>
               <legend>{t("cornerRoundingMode")}</legend>
-              <div className={styles.tabs} role="tablist" aria-label={t("cornerRoundingMode")}>
-                <button
-                  type="button"
-                  role="tab"
-                  id="linked-corner-rounding-tab"
-                  aria-controls="linked-corner-rounding-panel"
-                  aria-selected={cornerRoundingMode === "linked"}
-                  tabIndex={cornerRoundingMode === "linked" ? 0 : -1}
-                  onClick={() => setCornerRoundingMode("linked")}
-                >
-                  {t("linkedCornerRounding")}
-                </button>
-                <button
-                  type="button"
-                  role="tab"
-                  id="manual-corner-rounding-tab"
-                  aria-controls="manual-corner-rounding-panel"
-                  aria-selected={cornerRoundingMode === "manual"}
-                  tabIndex={cornerRoundingMode === "manual" ? 0 : -1}
-                  onClick={() => setCornerRoundingMode("manual")}
-                >
-                  {t("manualCornerRounding")}
-                </button>
-              </div>
+              <Tabs.Root
+                value={cornerRoundingMode}
+                onValueChange={(value) => setCornerRoundingMode(value as RoundingMode)}
+              >
+                <Tabs.List className={styles.tabs} aria-label={t("cornerRoundingMode")}>
+                  <Tabs.Tab className={styles.tab} value="linked">
+                    {t("linkedCornerRounding")}
+                  </Tabs.Tab>
+                  <Tabs.Tab className={styles.tab} value="manual">
+                    {t("manualCornerRounding")}
+                  </Tabs.Tab>
+                  <Tabs.Indicator className={styles.tabIndicator} />
+                </Tabs.List>
+              </Tabs.Root>
 
               {cornerRoundingMode === "linked" ? (
                 <div
@@ -398,15 +437,37 @@ function RadiusControl({
       <span>
         {label}: <output>{formatValue(value)}</output>
       </span>
-      <input
-        type="range"
-        aria-label={label}
-        min="0"
-        max={max}
-        step={step}
-        value={value}
-        onChange={(event) => onChange(event.target.valueAsNumber)}
-      />
+      <RangeControl label={label} min={0} max={max} step={step} value={value} onChange={onChange} />
     </label>
+  );
+}
+
+interface RangeControlProps {
+  label: string;
+  value: number;
+  min: number;
+  max: number;
+  step: number;
+  onChange: (value: number) => void;
+}
+
+function RangeControl({ label, value, min, max, step, onChange }: RangeControlProps) {
+  return (
+    <Slider.Root
+      className={styles.slider}
+      value={value}
+      min={min}
+      max={max}
+      step={step}
+      thumbAlignment="edge"
+      onValueChange={(nextValue) => onChange(nextValue as number)}
+    >
+      <Slider.Control className={styles.sliderControl}>
+        <Slider.Track className={styles.sliderTrack}>
+          <Slider.Indicator className={styles.sliderIndicator} />
+          <Slider.Thumb className={styles.sliderThumb} aria-label={label} />
+        </Slider.Track>
+      </Slider.Control>
+    </Slider.Root>
   );
 }

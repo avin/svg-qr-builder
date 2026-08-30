@@ -2,128 +2,334 @@
 
 .page {
   box-sizing: border-box;
-  max-width: 1200px;
+  max-width: 1240px;
   min-height: 100vh;
   margin-inline: auto;
-  padding: 24px 16px;
+  padding: 32px 16px 64px;
 }
-
+.page > h1 {
+  margin: 0 0 24px;
+  font-size: clamp(1.75rem, 4vw, 2.5rem);
+  font-weight: 650;
+  letter-spacing: -0.04em;
+}
 .workspace {
   display: grid;
-  gap: 24px;
+  gap: 16px;
 }
-
 .controls,
 .preview {
   box-sizing: border-box;
-  padding: 20px;
   border: 1px solid $rd-colors-gray-200;
+  border-radius: 12px;
+  background: $rd-colors-base-white;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
 }
-
 .controls {
   display: grid;
-  gap: 20px;
+  gap: 28px;
   align-content: start;
+  padding: 20px;
 }
-
 .controls fieldset {
   display: grid;
-  gap: 16px;
+  gap: 14px;
   min-inline-size: 0;
   margin: 0;
   padding: 0;
   border: 0;
 }
-
 .controls legend {
   margin-block-end: 12px;
-  font-weight: 700;
+  font-size: 0.875rem;
+  font-weight: 650;
 }
-
 .field {
   display: grid;
   gap: 8px;
+  color: $rd-colors-gray-700;
+  font-size: 0.8125rem;
+  font-weight: 500;
 }
-
-.field textarea,
-.field select {
+.fieldLabel {
+  display: block;
+  margin-block-end: 8px;
+  color: $rd-colors-gray-700;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+.field textarea {
   box-sizing: border-box;
   width: 100%;
-  padding: 8px;
-  font: inherit;
+  min-height: 92px;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid $rd-colors-gray-300;
+  border-radius: 8px;
+  outline: 0;
+  background: $rd-colors-base-white;
+  color: $rd-colors-base-black;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  transition:
+    border-color 120ms,
+    box-shadow 120ms;
 }
-
-.field input[type="range"] {
-  width: 100%;
+.field textarea:hover,
+.selectTrigger:hover {
+  border-color: $rd-colors-gray-400;
 }
-
-.colorControl,
-.checkbox {
+.field textarea:focus-visible,
+.selectTrigger:focus-visible {
+  border-color: $rd-colors-brand-700;
+  box-shadow: 0 0 0 3px $rd-colors-brand-100;
+}
+.selectTrigger {
   display: flex;
-  gap: 10px;
+  box-sizing: border-box;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px 8px 12px;
+  border: 1px solid $rd-colors-gray-300;
+  border-radius: 8px;
+  outline: 0;
+  background: $rd-colors-base-white;
+  color: $rd-colors-base-black;
+  font-size: 0.875rem;
+  text-align: start;
+  cursor: default;
 }
-
-.controls .roundingControlGroup {
-  gap: 12px;
-  padding-block-start: 4px;
+.selectIcon {
+  display: grid;
+  color: $rd-colors-gray-600;
+  transition: transform 150ms;
 }
-
-.tabs {
+.selectTrigger[data-popup-open] .selectIcon {
+  transform: rotate(180deg);
+}
+.selectPositioner {
+  z-index: 10;
+  outline: 0;
+}
+.selectPopup {
+  box-sizing: border-box;
+  min-width: var(--anchor-width);
+  max-height: var(--available-height);
+  padding: 4px;
+  overflow-y: auto;
+  border: 1px solid $rd-colors-gray-200;
+  border-radius: 8px;
+  outline: 0;
+  background: $rd-colors-base-white;
+  box-shadow:
+    0 10px 30px rgb(0 0 0 / 10%),
+    0 2px 8px rgb(0 0 0 / 6%);
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity 120ms,
+    transform 120ms;
+}
+.selectPopup[data-starting-style],
+.selectPopup[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.98);
+}
+.selectItem {
   display: flex;
-  border-block-end: 1px solid $rd-colors-gray-200;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  outline: 0;
+  color: $rd-colors-base-black;
+  font-size: 0.875rem;
+  cursor: default;
+  user-select: none;
 }
-
-.tabs button {
-  padding: 8px 12px;
+.selectItem[data-selected] {
+  font-weight: 650;
+}
+.selectItem[data-highlighted] {
+  background: $rd-colors-gray-100;
+}
+.selectItemIndicator {
+  order: 2;
+  display: grid;
+  flex: none;
+  place-items: center;
+  color: $rd-colors-base-black;
+}
+.selectItemText {
+  min-width: 0;
+}
+.colorControl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  padding: 4px 10px 4px 5px;
+  border: 1px solid $rd-colors-gray-300;
+  border-radius: 8px;
+}
+.colorControl input {
+  width: 30px;
+  height: 28px;
+  padding: 0;
+  overflow: hidden;
   border: 0;
-  border-block-end: 3px solid transparent;
+  border-radius: 5px;
   background: transparent;
-  color: $rd-colors-gray-700;
-  font: inherit;
   cursor: pointer;
 }
-
-.tabs button[aria-selected="true"] {
-  border-block-end-color: $rd-colors-brand-700;
-  color: $rd-colors-brand-900;
-  font-weight: 700;
+.colorControl input::-webkit-color-swatch-wrapper {
+  padding: 0;
 }
-
-.tabs button:focus-visible {
-  outline: 2px solid $rd-colors-brand-700;
-  outline-offset: 2px;
+.colorControl input::-webkit-color-swatch {
+  border: 0;
+  border-radius: 5px;
 }
-
+.colorControl output {
+  color: $rd-colors-gray-700;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+}
+.roundingControlGroup {
+  padding-block-start: 2px !important;
+}
+.tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3px;
+  border-radius: 8px;
+  background: $rd-colors-gray-100;
+}
+.tab {
+  position: relative;
+  z-index: 1;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  outline: 0;
+  background: transparent;
+  color: $rd-colors-gray-600;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.tab[data-selected] {
+  color: $rd-colors-base-black;
+}
+.tab:focus-visible {
+  box-shadow: inset 0 0 0 2px $rd-colors-brand-700;
+}
+.tabIndicator {
+  position: absolute;
+  inset-block: 3px;
+  inset-inline-start: 3px;
+  width: calc(50% - 3px);
+  border: 1px solid $rd-colors-gray-200;
+  border-radius: 6px;
+  background: $rd-colors-base-white;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+  translate: var(--active-tab-left) 0;
+  transition: translate 160ms ease;
+}
 .manualControls {
   display: grid;
   gap: 12px;
 }
-
+.slider {
+  padding-block: 7px;
+}
+.sliderControl {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+.sliderTrack {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: $rd-colors-gray-200;
+}
+.sliderIndicator {
+  border-radius: inherit;
+  background: $rd-colors-base-black;
+}
+.sliderThumb {
+  width: 16px;
+  height: 16px;
+  border: 1px solid $rd-colors-gray-300;
+  border-radius: 50%;
+  outline: 0;
+  background: $rd-colors-base-white;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 18%);
+  transition:
+    box-shadow 120ms,
+    transform 120ms;
+}
+.sliderThumb:hover {
+  transform: scale(1.08);
+}
+.sliderThumb:focus-visible {
+  box-shadow:
+    0 0 0 3px $rd-colors-brand-100,
+    0 0 0 1px $rd-colors-brand-700;
+}
 .preview {
   display: grid;
   align-content: start;
   justify-items: center;
+  padding: 20px;
 }
-
 .preview h2 {
   justify-self: start;
-  margin-block-start: 0;
+  margin: 0 0 24px;
+  font-size: 0.875rem;
+  font-weight: 650;
 }
-
 .qrCode {
-  width: min(100%, 480px);
+  box-sizing: border-box;
+  width: min(100%, 520px);
   height: auto;
   aspect-ratio: 1;
+  padding: clamp(8px, 3vw, 24px);
+  border: 1px solid $rd-colors-gray-150;
+  border-radius: 8px;
+  background: $rd-colors-base-white;
 }
-
 @media (min-width: 768px) {
   .page {
-    padding: 40px 24px;
+    padding: 48px 24px 80px;
   }
-
   .workspace {
-    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
     align-items: start;
+  }
+  .controls,
+  .preview {
+    padding: 24px;
+  }
+  .preview {
+    position: sticky;
+    top: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .selectIcon,
+  .selectPopup,
+  .tabIndicator,
+  .sliderThumb {
+    transition: none;
   }
 }
