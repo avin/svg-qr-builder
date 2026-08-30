@@ -184,6 +184,7 @@ export function QrConfigurator({ title }: Props) {
   const [errorCorrectionLevel, setErrorCorrectionLevel] = useState<ErrorCorrectionLevel>("M");
   const [fill, setFill] = useState("#212121");
   const [size, setSize] = useState(480);
+  const [sizeInput, setSizeInput] = useState("480");
   const [presetName, setPresetName] = useState<PresetName>(initialPreset);
   const [rounding, setRounding] = useState<RoundingSettings>(() =>
     getPresetSettings(initialPreset),
@@ -241,6 +242,20 @@ export function QrConfigurator({ title }: Props) {
     }));
   }
 
+  function setSvgSizeInput(value: string) {
+    setSizeInput(value);
+    const nextSize = Number(value);
+
+    if (Number.isInteger(nextSize) && nextSize >= 160 && nextSize <= 1024) {
+      setSize(nextSize);
+    }
+  }
+
+  function setSvgSize(value: number) {
+    setSize(value);
+    setSizeInput(String(value));
+  }
+
   return (
     <section className={styles.page}>
       <h1>{title}</h1>
@@ -277,9 +292,22 @@ export function QrConfigurator({ title }: Props) {
               </span>
             </label>
 
-            <label className={styles.field}>
-              <span>
-                {t("svgSize")}: <output>{size} px</output>
+            <div className={styles.field}>
+              <span className={styles.sizeLabel}>
+                {t("svgSize")}:
+                <span className={styles.sizeInputControl}>
+                  <input
+                    type="number"
+                    aria-label={t("svgSize")}
+                    min={160}
+                    max={1024}
+                    step={1}
+                    value={sizeInput}
+                    onChange={(event) => setSvgSizeInput(event.target.value)}
+                    onBlur={() => setSizeInput(String(size))}
+                  />
+                  <span>px</span>
+                </span>
               </span>
               <RangeControl
                 label={t("svgSize")}
@@ -287,9 +315,9 @@ export function QrConfigurator({ title }: Props) {
                 max={1024}
                 step={16}
                 value={size}
-                onChange={setSize}
+                onChange={setSvgSize}
               />
-            </label>
+            </div>
           </div>
 
           <div className={styles.controlGroup} aria-label={t("rounding")}>
@@ -329,12 +357,12 @@ export function QrConfigurator({ title }: Props) {
             </Select.Root>
 
             <div className={styles.roundingControlGroup}>
-              <div className={styles.controlGroupTitle}>{t("dataRoundingControls")}</div>
+              <div className={styles.controlGroupTitle}>{t("roundingDataCells")}</div>
               <Tabs.Root
                 value={dataRoundingMode}
                 onValueChange={(value) => setDataRoundingMode(value as RoundingMode)}
               >
-                <Tabs.List className={styles.tabs} aria-label={t("dataRoundingControls")}>
+                <Tabs.List className={styles.tabs} aria-label={t("roundingDataCells")}>
                   <Tabs.Tab className={styles.tab} value="linked">
                     {t("linked")}
                   </Tabs.Tab>
@@ -381,12 +409,12 @@ export function QrConfigurator({ title }: Props) {
               )}
             </div>
             <div className={styles.roundingControlGroup}>
-              <div className={styles.controlGroupTitle}>{t("cornerRoundingControls")}</div>
+              <div className={styles.controlGroupTitle}>{t("roundingCornerCells")}</div>
               <Tabs.Root
                 value={cornerRoundingMode}
                 onValueChange={(value) => setCornerRoundingMode(value as RoundingMode)}
               >
-                <Tabs.List className={styles.tabs} aria-label={t("cornerRoundingControls")}>
+                <Tabs.List className={styles.tabs} aria-label={t("roundingCornerCells")}>
                   <Tabs.Tab className={styles.tab} value="linked">
                     {t("linked")}
                   </Tabs.Tab>

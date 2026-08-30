@@ -31,10 +31,10 @@ export const translations: TranslationTree = {
     ru: "Вогнутые углы данных",
     ar: "زوايا البيانات المقعرة",
   },
-  dataRoundingControls: {
-    en: "Data rounding controls",
-    ru: "Настройка углов данных",
-    ar: "عناصر التحكم في استدارة البيانات",
+  roundingDataCells: {
+    en: "Rounding data cells",
+    ru: "Скругление ячеек данных",
+    ar: "استدارة خلايا البيانات",
   },
   dataCornerRounding: {
     en: "Data corner rounding",
@@ -56,10 +56,10 @@ export const translations: TranslationTree = {
     ru: "Выпуклые углы центра",
     ar: "زوايا المركز المحدبة",
   },
-  cornerRoundingControls: {
-    en: "Corner rounding controls",
-    ru: "Настройка угловых блоков",
-    ar: "عناصر التحكم في استدارة كتل الزوايا",
+  roundingCornerCells: {
+    en: "Rounding corner cells",
+    ru: "Скругление угловых ячеек",
+    ar: "استدارة خلايا الزوايا",
   },
   linked: { en: "Linked", ru: "Связанно", ar: "مترابط" },
   manual: { en: "Manual", ru: "Вручную", ar: "يدوي" },

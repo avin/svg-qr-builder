@@ -28,9 +28,15 @@ test("показывает выбранный размер SVG в предела
   await expect(qrCode).toHaveAttribute("width", "480");
   await expect(qrCode).toHaveAttribute("height", "480");
 
+  const exactSize = page.getByRole("spinbutton", { name: "SVG size" });
+  await exactSize.fill("433");
+  await expect(qrCode).toHaveAttribute("width", "433");
+  await expect(qrCode).toHaveAttribute("height", "433");
+
   const size = page.getByRole("slider", { name: "SVG size" });
   await size.press("End");
 
+  await expect(exactSize).toHaveValue("1024");
   await expect(qrCode).toHaveAttribute("width", "1024");
   await expect(qrCode).toHaveAttribute("height", "1024");
   await expect
@@ -175,11 +181,11 @@ test("показывает настройки профиля Rounded как в �
 test("ограничивает диапазоны скругления", async ({ page }) => {
   await page.goto("/");
   await page
-    .getByRole("tablist", { name: "Data rounding controls" })
+    .getByRole("tablist", { name: "Rounding data cells" })
     .getByRole("tab", { name: "Manual" })
     .click();
   await page
-    .getByRole("tablist", { name: "Corner rounding controls" })
+    .getByRole("tablist", { name: "Rounding corner cells" })
     .getByRole("tab", { name: "Manual" })
     .click();
 
@@ -208,7 +214,7 @@ test("переключает связанную и ручную настройк
 
   await linkedRounding.press("ArrowLeft");
   const manualTab = page
-    .getByRole("tablist", { name: "Corner rounding controls" })
+    .getByRole("tablist", { name: "Rounding corner cells" })
     .getByRole("tab", { name: "Manual" });
   await manualTab.click();
   await expect(manualTab).toHaveAttribute("aria-selected", "true");
@@ -233,7 +239,7 @@ test("переключает связанную и ручную настройк
   await linkedRounding.press("ArrowLeft");
 
   const manualTab = page
-    .getByRole("tablist", { name: "Data rounding controls" })
+    .getByRole("tablist", { name: "Rounding data cells" })
     .getByRole("tab", { name: "Manual" });
   await manualTab.click();
 
