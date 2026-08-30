@@ -14,6 +14,14 @@ const languageLabelKeys = {
   en: "english",
   ru: "russian",
   ar: "arabic",
+  es: "spanish",
+  zh: "simplifiedChinese",
+  "pt-BR": "brazilianPortuguese",
+  de: "german",
+  fr: "french",
+  ja: "japanese",
+  hi: "hindi",
+  he: "hebrew",
 } as const;
 
 function LanguageSelector() {
@@ -40,8 +48,8 @@ function LanguageSelector() {
                   value={availableLanguage}
                   closeOnClick
                 >
-                  <span lang={availableLanguage}>
-                    {t(languageLabelKeys[availableLanguage], { lng: availableLanguage })}
+                  <span lang={availableLanguage} dir="auto">
+                    {t(languageLabelKeys[availableLanguage])}
                   </span>
                   <Menu.RadioItemIndicator className={styles.languageIndicator}>
                     <IconCheck size={15} stroke={2} aria-hidden="true" />

@@ -12,6 +12,19 @@ test.describe("выбор языка", () => {
     await expect(page.locator("html")).toHaveAttribute("lang", "ru");
 
     await languageButton.click();
+    await expect(page.getByRole("menuitemradio")).toHaveText([
+      "English",
+      "简体中文",
+      "हिन्दी",
+      "Español",
+      "العربية",
+      "Français",
+      "Português (Brasil)",
+      "Русский",
+      "日本語",
+      "Deutsch",
+      "עברית",
+    ]);
     const englishOption = page.getByRole("menuitemradio", { name: "English" });
     await englishOption.click();
     await expect(englishOption).not.toBeVisible();
@@ -27,7 +40,7 @@ test.describe("выбор языка", () => {
     await page.goto("/");
 
     await page.getByRole("button", { name: "Выбрать язык" }).click();
-    await page.getByRole("menuitemradio", { name: "Arabic" }).click();
+    await page.getByRole("menuitemradio", { name: "العربية" }).click();
 
     const size = page.getByRole("slider", { name: "حجم SVG" });
     await size.press("Home");
@@ -35,6 +48,19 @@ test.describe("выбор языка", () => {
 
     await size.press("ArrowLeft");
     await expect(size).toHaveValue("108");
+  });
+});
+
+test.describe("региональный язык браузера", () => {
+  test.use({ locale: "pt-BR" });
+
+  test("выбирает португальский для Бразилии", async ({ page }) => {
+    await page.goto("/");
+
+    await expect(page.getByRole("button", { name: "Selecionar idioma" })).toBeVisible();
+    await expect(page.getByRole("textbox", { name: "Dados", exact: true })).toBeVisible();
+    await expect(page.locator("html")).toHaveAttribute("lang", "pt-BR");
+    await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
   });
 });
 

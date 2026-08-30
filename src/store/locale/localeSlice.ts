@@ -37,7 +37,13 @@ function getAvailableLanguage(
     return undefined;
   }
 
-  return availableLanguages.find((language) => language === normalizedValue);
+  const baseLanguage = normalizedValue.split("-")[0];
+
+  return (
+    availableLanguages.find((language) => language.toLowerCase() === normalizedValue) ??
+    availableLanguages.find((language) => language.toLowerCase() === baseLanguage) ??
+    availableLanguages.find((language) => language.toLowerCase().startsWith(`${baseLanguage}-`))
+  );
 }
 
 function getBrowserLanguage(availableLanguages: Language[]): Language | undefined {
@@ -45,7 +51,6 @@ function getBrowserLanguage(availableLanguages: Language[]): Language | undefine
     navigator.languages.length > 0 ? navigator.languages : [navigator.language];
 
   return preferredLanguages
-    .map((language) => language.split("-")[0])
     .map((language) => getAvailableLanguage(language, availableLanguages))
     .find((language): language is Language => language !== undefined);
 }

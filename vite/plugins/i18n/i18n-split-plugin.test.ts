@@ -7,10 +7,11 @@ import { i18nSplitPlugin } from "./i18n-split-plugin.js";
 
 const tempRoots: string[] = [];
 const files = {
-  "src/i18n/languages.ts": `export const languages = ["en", "ru"] as const;\n`,
+  "src/i18n/languages.ts": `export const languages = ["en", "ru", "pt-BR"] as const;\n`,
   "src/i18n/translations/index.ts": `export const translations = {
   title: { en: "SVG QR Builder", ru: "Конструктор SVG QR" },
   nested: { greeting: { en: "Hello", ru: "Привет" } },
+  regional: { en: "Regional", ru: "Региональный", "pt-BR": "Regional" },
 };\n`,
 };
 
@@ -56,8 +57,12 @@ describe("i18n-split plugin", () => {
     const en = await load.call(context, "\0virtual:i18n/locale/en");
     const ru = await load.call(context, "\0virtual:i18n/locale/ru");
 
-    expect(en).toBe('export default {"title":"SVG QR Builder","nested":{"greeting":"Hello"}}');
-    expect(ru).toBe('export default {"title":"Конструктор SVG QR","nested":{"greeting":"Привет"}}');
+    expect(en).toBe(
+      'export default {"title":"SVG QR Builder","nested":{"greeting":"Hello"},"regional":"Regional"}',
+    );
+    expect(ru).toBe(
+      'export default {"title":"Конструктор SVG QR","nested":{"greeting":"Привет"},"regional":"Региональный"}',
+    );
   });
 
   it("создаёт ленивый загрузчик для каждого языка", async () => {
@@ -67,8 +72,9 @@ describe("i18n-split plugin", () => {
       "\0virtual:i18n/loaders",
     );
 
-    expect(source).toContain('en: () => import("virtual:i18n/locale/en")');
-    expect(source).toContain('ru: () => import("virtual:i18n/locale/ru")');
+    expect(source).toContain('"en": () => import("virtual:i18n/locale/en")');
+    expect(source).toContain('"ru": () => import("virtual:i18n/locale/ru")');
+    expect(source).toContain('"pt-BR": () => import("virtual:i18n/locale/pt-BR")');
   });
 
   it("подставляет заметную заглушку для отсутствующего перевода", async () => {

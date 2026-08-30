@@ -106,7 +106,10 @@ async function loadModuleExport<T>(
 
 function createLocaleLoadersSource(languages: readonly Language[]) {
   const loaders = languages
-    .map((language) => `  ${language}: () => import("virtual:i18n/locale/${language}"),`)
+    .map(
+      (language) =>
+        `  ${JSON.stringify(language)}: () => import("virtual:i18n/locale/${language}"),`,
+    )
     .join("\n");
   return `export const localeLoaders = {\n${loaders}\n};\n`;
 }
