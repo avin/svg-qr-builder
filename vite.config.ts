@@ -6,6 +6,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import localhostCerts from "vite-plugin-localhost-certs";
 import { getDevServerPort } from "./vite/get-dev-server-port.js";
+import { i18nSplitPlugin } from "./vite/plugins/i18n/i18n-split-plugin.js";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 export default defineConfig(async ({ command, isPreview }) => ({
@@ -14,7 +15,7 @@ export default defineConfig(async ({ command, isPreview }) => ({
       "@": path.resolve(dirname, "src"),
     },
   },
-  plugins: [localhostCerts(), react(), tailwindcss()],
+  plugins: [localhostCerts(), i18nSplitPlugin(), react(), tailwindcss()],
   css: {
     preprocessorOptions: {
       scss: {

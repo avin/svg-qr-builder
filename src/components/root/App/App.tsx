@@ -6,7 +6,7 @@ export function App() {
 
   return (
     <main>
-      <QrConfigurator title={t("qrCodeConfigurator")} />
+      <QrConfigurator title={t("svgQrBuilder")} />
     </main>
   );
 }

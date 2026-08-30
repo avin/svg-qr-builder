@@ -40,11 +40,11 @@ const presetNames: PresetName[] = [
 ];
 const errorCorrectionLabelKeys = { L: "low", M: "medium", Q: "quartile", H: "high" } as const;
 const presetLabelKeys = {
-  square: "squareProfile",
-  rounded: "roundedProfile",
-  circleCornerBlocks: "circleCornerBlocksProfile",
-  roundedWithCircleCornerBlocks: "roundedWithCircleCornerBlocksProfile",
-  custom: "customProfile",
+  square: "square",
+  rounded: "rounded",
+  circleCornerBlocks: "circularCornerBlocks",
+  roundedWithCircleCornerBlocks: "roundedCircularCornerBlocks",
+  custom: "custom",
 } as const;
 
 function roundToTenths(value: number) {
@@ -165,7 +165,7 @@ export function QrConfigurator({ title }: Props) {
       <div className={styles.workspace}>
         <form className={styles.controls} onSubmit={(event) => event.preventDefault()}>
           <fieldset>
-            <legend>{t("contentSettings")}</legend>
+            <legend>{t("content")}</legend>
 
             <label className={styles.field}>
               <span>{t("payload")}</span>
@@ -216,7 +216,7 @@ export function QrConfigurator({ title }: Props) {
           </fieldset>
 
           <fieldset>
-            <legend>{t("appearanceSettings")}</legend>
+            <legend>{t("appearance")}</legend>
 
             <label className={styles.field}>
               <span>{t("qrColor")}</span>
@@ -246,7 +246,7 @@ export function QrConfigurator({ title }: Props) {
           </fieldset>
 
           <fieldset>
-            <legend>{t("roundingSettings")}</legend>
+            <legend>{t("rounding")}</legend>
 
             <Select.Root
               value={presetName}
@@ -282,17 +282,17 @@ export function QrConfigurator({ title }: Props) {
             </Select.Root>
 
             <fieldset className={styles.roundingControlGroup}>
-              <legend>{t("dataRoundingMode")}</legend>
+              <legend>{t("dataRoundingControls")}</legend>
               <Tabs.Root
                 value={dataRoundingMode}
                 onValueChange={(value) => setDataRoundingMode(value as RoundingMode)}
               >
-                <Tabs.List className={styles.tabs} aria-label={t("dataRoundingMode")}>
+                <Tabs.List className={styles.tabs} aria-label={t("dataRoundingControls")}>
                   <Tabs.Tab className={styles.tab} value="linked">
-                    {t("linkedCornerRounding")}
+                    {t("linked")}
                   </Tabs.Tab>
                   <Tabs.Tab className={styles.tab} value="manual">
-                    {t("manualCornerRounding")}
+                    {t("manual")}
                   </Tabs.Tab>
                   <Tabs.Indicator className={styles.tabIndicator} />
                 </Tabs.List>
@@ -305,7 +305,7 @@ export function QrConfigurator({ title }: Props) {
                   aria-labelledby="linked-data-rounding-tab"
                 >
                   <RadiusControl
-                    label={t("dataRounding")}
+                    label={t("dataCornerRounding")}
                     value={getLinkedDataRounding(rounding)}
                     max={2}
                     onChange={setLinkedDataRounding}
@@ -319,13 +319,13 @@ export function QrConfigurator({ title }: Props) {
                   aria-labelledby="manual-data-rounding-tab"
                 >
                   <RadiusControl
-                    label={t("dataOuterCornerRadius")}
+                    label={t("dataConvexCorners")}
                     value={rounding.dataOuter}
                     max={2}
                     onChange={(value) => setRoundingValue("dataOuter", value)}
                   />
                   <RadiusControl
-                    label={t("dataInnerCornerRadius")}
+                    label={t("dataConcaveCorners")}
                     value={rounding.dataInner}
                     max={2}
                     onChange={(value) => setRoundingValue("dataInner", value)}
@@ -334,17 +334,17 @@ export function QrConfigurator({ title }: Props) {
               )}
             </fieldset>
             <fieldset className={styles.roundingControlGroup}>
-              <legend>{t("cornerRoundingMode")}</legend>
+              <legend>{t("cornerRoundingControls")}</legend>
               <Tabs.Root
                 value={cornerRoundingMode}
                 onValueChange={(value) => setCornerRoundingMode(value as RoundingMode)}
               >
-                <Tabs.List className={styles.tabs} aria-label={t("cornerRoundingMode")}>
+                <Tabs.List className={styles.tabs} aria-label={t("cornerRoundingControls")}>
                   <Tabs.Tab className={styles.tab} value="linked">
-                    {t("linkedCornerRounding")}
+                    {t("linked")}
                   </Tabs.Tab>
                   <Tabs.Tab className={styles.tab} value="manual">
-                    {t("manualCornerRounding")}
+                    {t("manual")}
                   </Tabs.Tab>
                   <Tabs.Indicator className={styles.tabIndicator} />
                 </Tabs.List>
@@ -373,19 +373,19 @@ export function QrConfigurator({ title }: Props) {
                   aria-labelledby="manual-corner-rounding-tab"
                 >
                   <RadiusControl
-                    label={t("cornerRingOuterRadius")}
+                    label={t("cornerRingConvexCorners")}
                     value={rounding.cornerRingOuter}
                     max={cornerRadiusMaximums.ringOuter}
                     onChange={(value) => setRoundingValue("cornerRingOuter", value)}
                   />
                   <RadiusControl
-                    label={t("cornerRingInnerRadius")}
+                    label={t("cornerRingConcaveCorners")}
                     value={rounding.cornerRingInner}
                     max={cornerRadiusMaximums.ringInner}
                     onChange={(value) => setRoundingValue("cornerRingInner", value)}
                   />
                   <RadiusControl
-                    label={t("cornerCenterOuterRadius")}
+                    label={t("cornerCenterConvexCorners")}
                     value={rounding.cornerCenterOuter}
                     max={cornerRadiusMaximums.centerOuter}
                     onChange={(value) => setRoundingValue("cornerCenterOuter", value)}
@@ -407,7 +407,7 @@ export function QrConfigurator({ title }: Props) {
               height={size}
             />
           ) : (
-            <p role="alert">{t("qrGenerationError")}</p>
+            <p role="alert">{t("qrCodeGenerationFailedTryShorterContent")}</p>
           )}
         </section>
       </div>
