@@ -296,6 +296,11 @@ export function QrConfigurator() {
     setSizeInput(String(value));
   }
 
+  function setCenterImage(image: EmbeddedImage) {
+    setEmbeddedImage(image);
+    setErrorCorrectionLevel("H");
+  }
+
   return (
     <section className={styles.page}>
       <div className={styles.workspace}>
@@ -587,7 +592,7 @@ export function QrConfigurator() {
                         type="file"
                         accept="image/*"
                         onChange={(event) =>
-                          void readEmbeddedImage(event.currentTarget.files?.[0], setEmbeddedImage)
+                          void readEmbeddedImage(event.currentTarget.files?.[0], setCenterImage)
                         }
                       />
                     </label>

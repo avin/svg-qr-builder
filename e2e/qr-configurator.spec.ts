@@ -230,6 +230,9 @@ test("показывает тень SVG только при наличии фо�
 test("добавляет изображение с вырезом и скачивает SVG", async ({ page }) => {
   await page.goto("/");
 
+  const errorCorrection = page.getByRole("slider", { name: "Error correction level" });
+  await expect(errorCorrection).toHaveAttribute("aria-valuetext", "M — Medium");
+
   await page.getByLabel("Upload image").setInputFiles({
     name: "wide-logo.svg",
     mimeType: "image/svg+xml",
@@ -239,8 +242,20 @@ test("добавляет изображение с вырезом и скачи�
   });
 
   await expect(page.getByRole("button", { name: "Remove image" })).toBeVisible();
+  await expect(errorCorrection).toHaveAttribute("aria-valuetext", "H — High");
   const qrCode = page.getByRole("img", { name: "Generated QR code" });
   await expect(qrCode.locator("image")).toHaveCount(1);
+
+  await page.getByRole("button", { name: "Remove image" }).click();
+  await expect(errorCorrection).toHaveAttribute("aria-valuetext", "H — High");
+
+  await page.getByLabel("Upload image").setInputFiles({
+    name: "wide-logo.svg",
+    mimeType: "image/svg+xml",
+    buffer: Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><rect width="200" height="100" fill="red"/></svg>',
+    ),
+  });
 
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download SVG" }).click();
@@ -263,10 +278,12 @@ test("предупреждает, когда изображение превыш
   const warning = page.getByRole("alert");
   await expect(warning).not.toBeVisible();
 
+  const errorCorrection = page.getByRole("slider", { name: "Error correction level" });
+  await errorCorrection.press("Home");
   await page.getByRole("slider", { name: "Image size" }).press("End");
   await expect(warning).toContainText("This QR code may be unreadable");
 
-  await page.getByRole("slider", { name: "Error correction level" }).press("ArrowRight");
+  await errorCorrection.press("End");
   await expect(warning).not.toBeVisible();
 });
 
