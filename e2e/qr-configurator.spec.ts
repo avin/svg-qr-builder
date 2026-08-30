@@ -191,8 +191,8 @@ test("показывает выбранный размер SVG в предела
   await page.goto("/");
 
   const qrCode = page.getByRole("img", { name: "Generated QR code" });
-  await expect(qrCode).toHaveAttribute("width", "320");
-  await expect(qrCode).toHaveAttribute("height", "320");
+  await expect(qrCode).toHaveAttribute("width", "360");
+  await expect(qrCode).toHaveAttribute("height", "360");
 
   const exactSize = page.getByRole("spinbutton", { name: "SVG size" });
   await exactSize.fill("433");
