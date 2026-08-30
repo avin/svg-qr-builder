@@ -580,28 +580,31 @@ export function QrConfigurator({ title }: Props) {
               </div>
               <div className={styles.controlGroup}>
                 <div className={styles.controlGroupTitle}>{t("centerImage")}</div>
-                <div className={styles.imageActions}>
-                  <label className={styles.fileButton}>
-                    <IconUpload size={17} stroke={1.8} />
-                    <span>{embeddedImage ? embeddedImage.name : t("uploadImage")}</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={(event) =>
-                        void readEmbeddedImage(event.currentTarget.files?.[0], setEmbeddedImage)
-                      }
-                    />
-                  </label>
-                  {embeddedImage ? (
-                    <button
-                      className={styles.iconButton}
-                      type="button"
-                      aria-label={t("removeImage")}
-                      onClick={() => setEmbeddedImage(null)}
-                    >
-                      <IconTrash size={17} stroke={1.8} />
-                    </button>
-                  ) : null}
+                <div className={styles.field}>
+                  <span>{t("image")}</span>
+                  <div className={styles.imageActions}>
+                    <label className={styles.fileButton}>
+                      <IconUpload size={17} stroke={1.8} />
+                      <span>{embeddedImage ? embeddedImage.name : t("uploadImage")}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={(event) =>
+                          void readEmbeddedImage(event.currentTarget.files?.[0], setEmbeddedImage)
+                        }
+                      />
+                    </label>
+                    {embeddedImage ? (
+                      <button
+                        className={styles.iconButton}
+                        type="button"
+                        aria-label={t("removeImage")}
+                        onClick={() => setEmbeddedImage(null)}
+                      >
+                        <IconTrash size={17} stroke={1.8} />
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
                 <PercentControl
                   label={t("imageSize")}

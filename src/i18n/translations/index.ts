@@ -91,6 +91,7 @@ export const translations: TranslationTree = {
   enabled: { en: "Enabled", ru: "Включено", ar: "مفعّل" },
   qrPadding: { en: "QR padding", ru: "Отступ QR-кода", ar: "هامش رمز QR" },
   centerImage: { en: "Center image", ru: "Изображение в центре", ar: "الصورة المركزية" },
+  image: { en: "Image", ru: "Изображение", ar: "الصورة" },
   uploadImage: { en: "Upload image", ru: "Загрузить изображение", ar: "تحميل صورة" },
   removeImage: { en: "Remove image", ru: "Удалить изображение", ar: "إزالة الصورة" },
   imageSize: { en: "Image size", ru: "Размер изображения", ar: "حجم الصورة" },
