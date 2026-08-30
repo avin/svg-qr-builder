@@ -30,7 +30,7 @@ export const initialSettings: QrSettings = {
   content: "https://avin.github.io/sexy-qr",
   errorCorrectionLevel: "M",
   fill: "#212121",
-  size: 480,
+  size: 320,
   presetName: "rounded",
   dataRoundingMode: "linked",
   cornerRoundingMode: "linked",
