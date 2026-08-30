@@ -1,0 +1,90 @@
+import { expect, test } from "@playwright/test";
+
+test("обновляет QR-код через настройки нового API", async ({ page }) => {
+  await page.goto("/");
+
+  const qrCode = page.getByRole("img", { name: "Generated QR code" });
+  await expect(qrCode).toBeVisible();
+  const initialSource = await qrCode.getAttribute("src");
+
+  await page.getByLabel("Payload").fill("https://example.com/new-value");
+  await expect(qrCode).not.toHaveAttribute("src", initialSource!);
+
+  await page.getByLabel("Rounding profile").selectOption("square");
+  const dataRounding = page.getByRole("slider", { name: "Data corner rounding" });
+  await expect(dataRounding).toHaveValue("0");
+
+  await dataRounding.press("ArrowRight");
+  await expect(page.getByLabel("Rounding profile")).toHaveValue("custom");
+  await expect(qrCode).not.toHaveAttribute("src", initialSource!);
+});
+
+test("ограничивает диапазоны скругления", async ({ page }) => {
+  await page.goto("/");
+  await page
+    .getByRole("tablist", { name: "Data rounding controls" })
+    .getByRole("tab", { name: "Manual" })
+    .click();
+  await page
+    .getByRole("tablist", { name: "Corner rounding controls" })
+    .getByRole("tab", { name: "Manual" })
+    .click();
+
+  const expectedMaximums = {
+    "Data convex corners": "2",
+    "Data concave corners": "2",
+    "Corner ring convex corners": "7",
+    "Corner ring concave corners": "5",
+    "Corner center convex corners": "3",
+  };
+
+  await Promise.all(
+    Object.entries(expectedMaximums).map(([name, maximum]) =>
+      expect(page.getByRole("slider", { name })).toHaveAttribute("max", maximum),
+    ),
+  );
+});
+
+test("переключает связанную и ручную настройку угловых блоков", async ({ page }) => {
+  await page.goto("/");
+
+  const linkedRounding = page.getByRole("slider", { name: "Corner rounding", exact: true });
+  await expect(linkedRounding).toBeVisible();
+  await expect(linkedRounding).toHaveValue("1");
+  await expect(page.getByRole("slider", { name: "Corner ring convex corners" })).not.toBeVisible();
+
+  await linkedRounding.press("ArrowLeft");
+  const manualTab = page
+    .getByRole("tablist", { name: "Corner rounding controls" })
+    .getByRole("tab", { name: "Manual" });
+  await manualTab.click();
+  await expect(manualTab).toHaveAttribute("aria-selected", "true");
+
+  await expect(page.getByRole("slider", { name: "Corner ring convex corners" })).toHaveValue("6.3");
+  await expect(page.getByRole("slider", { name: "Corner ring concave corners" })).toHaveValue(
+    "4.5",
+  );
+  await expect(page.getByRole("slider", { name: "Corner center convex corners" })).toHaveValue(
+    "2.7",
+  );
+  await expect(
+    page.getByRole("slider", { name: "Corner rounding", exact: true }),
+  ).not.toBeVisible();
+});
+
+test("переключает связанную и ручную настройку углов данных", async ({ page }) => {
+  await page.goto("/");
+
+  const linkedRounding = page.getByRole("slider", { name: "Data corner rounding" });
+  await expect(linkedRounding).toHaveValue("1");
+  await linkedRounding.press("ArrowLeft");
+
+  const manualTab = page
+    .getByRole("tablist", { name: "Data rounding controls" })
+    .getByRole("tab", { name: "Manual" });
+  await manualTab.click();
+
+  await expect(page.getByRole("slider", { name: "Data convex corners" })).toHaveValue("0.9");
+  await expect(page.getByRole("slider", { name: "Data concave corners" })).toHaveValue("0.9");
+  await expect(page.getByRole("slider", { name: "Data corner rounding" })).not.toBeVisible();
+});

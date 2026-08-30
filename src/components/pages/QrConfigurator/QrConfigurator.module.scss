@@ -1,0 +1,129 @@
+@use "@/styles/kit" as *;
+
+.page {
+  box-sizing: border-box;
+  max-width: 1200px;
+  min-height: 100vh;
+  margin-inline: auto;
+  padding: 24px 16px;
+}
+
+.workspace {
+  display: grid;
+  gap: 24px;
+}
+
+.controls,
+.preview {
+  box-sizing: border-box;
+  padding: 20px;
+  border: 1px solid $rd-colors-gray-200;
+}
+
+.controls {
+  display: grid;
+  gap: 20px;
+  align-content: start;
+}
+
+.controls fieldset {
+  display: grid;
+  gap: 16px;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.controls legend {
+  margin-block-end: 12px;
+  font-weight: 700;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.field textarea,
+.field select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 8px;
+  font: inherit;
+}
+
+.field input[type="range"] {
+  width: 100%;
+}
+
+.colorControl,
+.checkbox {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.controls .roundingControlGroup {
+  gap: 12px;
+  padding-block-start: 4px;
+}
+
+.tabs {
+  display: flex;
+  border-block-end: 1px solid $rd-colors-gray-200;
+}
+
+.tabs button {
+  padding: 8px 12px;
+  border: 0;
+  border-block-end: 3px solid transparent;
+  background: transparent;
+  color: $rd-colors-gray-700;
+  font: inherit;
+  cursor: pointer;
+}
+
+.tabs button[aria-selected="true"] {
+  border-block-end-color: $rd-colors-brand-700;
+  color: $rd-colors-brand-900;
+  font-weight: 700;
+}
+
+.tabs button:focus-visible {
+  outline: 2px solid $rd-colors-brand-700;
+  outline-offset: 2px;
+}
+
+.manualControls {
+  display: grid;
+  gap: 12px;
+}
+
+.preview {
+  display: grid;
+  align-content: start;
+  justify-items: center;
+}
+
+.preview h2 {
+  justify-self: start;
+  margin-block-start: 0;
+}
+
+.qrCode {
+  width: min(100%, 480px);
+  height: auto;
+  aspect-ratio: 1;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding: 40px 24px;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    align-items: start;
+  }
+}

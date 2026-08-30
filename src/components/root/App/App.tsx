@@ -1,7 +1,12 @@
 import { useTranslation } from "react-i18next";
+import { QrConfigurator } from "@/components/pages/QrConfigurator/QrConfigurator";
 
 export function App() {
   const { t } = useTranslation();
 
-  return <main>{t("todo")}</main>;
+  return (
+    <main>
+      <QrConfigurator title={t("qrCodeConfigurator")} />
+    </main>
+  );
 }
