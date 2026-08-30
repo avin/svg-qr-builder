@@ -1,7 +1,7 @@
 @use "variables" as *;
 
 html {
-  background: $rd-colors-gray-100;
+  background: $colors-gray-100;
   font-family:
     Inter,
     ui-sans-serif,
@@ -12,7 +12,7 @@ html {
   font-size: 16px;
   font-weight: 400;
   line-height: 1.3;
-  color: $rd-colors-base-black;
+  color: $colors-base-black;
   text-rendering: optimizeLegibility;
 }
 

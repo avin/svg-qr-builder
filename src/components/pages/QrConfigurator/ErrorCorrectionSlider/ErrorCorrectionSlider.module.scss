@@ -3,13 +3,13 @@
 .field {
   display: grid;
   gap: 8px;
-  color: $rd-colors-gray-700;
+  color: $colors-gray-700;
   font-size: 0.8125rem;
   font-weight: 500;
 }
 
 .label output {
-  color: $rd-colors-base-black;
+  color: $colors-base-black;
 }
 
 .slider {
@@ -30,7 +30,7 @@
   width: 100%;
   height: 4px;
   border-radius: 999px;
-  background: $rd-colors-gray-200;
+  background: $colors-gray-200;
 }
 
 .markers {
@@ -49,9 +49,9 @@
   box-sizing: border-box;
   width: 12px;
   height: 12px;
-  border: 1px solid $rd-colors-gray-300;
+  border: 1px solid $colors-gray-300;
   border-radius: 50%;
-  background: $rd-colors-base-white;
+  background: $colors-base-white;
 }
 
 .thumb {
@@ -59,34 +59,34 @@
   box-sizing: border-box;
   width: 16px;
   height: 16px;
-  border: 2px solid $rd-colors-base-black;
+  border: 2px solid $colors-base-black;
   border-radius: 50%;
   outline: 0;
-  background: $rd-colors-base-black;
+  background: $colors-base-black;
   transition:
     box-shadow 120ms,
     inset-inline-start 120ms;
 }
 
 .thumb:hover {
-  box-shadow: 0 0 0 3px $rd-colors-gray-200;
+  box-shadow: 0 0 0 3px $colors-gray-200;
 }
 
 .thumb:has(input:focus-visible) {
-  border-color: $rd-colors-gray-700;
-  box-shadow: 0 0 0 3px $rd-colors-gray-200;
+  border-color: $colors-gray-700;
+  box-shadow: 0 0 0 3px $colors-gray-200;
 }
 
 .positions {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  color: $rd-colors-gray-700;
+  color: $colors-gray-700;
   font-size: 0.75rem;
   text-align: center;
 }
 
 .positions [data-selected] {
-  color: $rd-colors-base-black;
+  color: $colors-base-black;
   font-weight: 650;
 }
 
