@@ -5,10 +5,10 @@ test("обновляет QR-код через настройки нового AP
 
   const qrCode = page.getByRole("img", { name: "Generated QR code" });
   await expect(qrCode).toBeVisible();
-  const initialSource = await qrCode.getAttribute("src");
+  const initialMarkup = await qrCode.innerHTML();
 
   await page.getByLabel("Payload").fill("https://example.com/new-value");
-  await expect(qrCode).not.toHaveAttribute("src", initialSource!);
+  await expect.poll(() => qrCode.innerHTML()).not.toBe(initialMarkup);
 
   const roundingProfile = page.getByRole("combobox", { name: "Rounding profile" });
   await roundingProfile.click();
@@ -18,7 +18,7 @@ test("обновляет QR-код через настройки нового AP
 
   await dataRounding.press("ArrowRight");
   await expect(roundingProfile).toContainText("Custom");
-  await expect(qrCode).not.toHaveAttribute("src", initialSource!);
+  await expect.poll(() => qrCode.innerHTML()).not.toBe(initialMarkup);
 });
 
 test("показывает выбранный размер SVG в пределах контейнера", async ({ page }) => {
@@ -26,7 +26,7 @@ test("показывает выбранный размер SVG в предела
 
   const qrCode = page.getByRole("img", { name: "Generated QR code" });
   await expect(qrCode).toHaveAttribute("width", "480");
-  await expect(qrCode).toHaveCSS("width", "480px");
+  await expect(qrCode).toHaveAttribute("height", "480");
 
   const size = page.getByRole("slider", { name: "SVG size" });
   await size.press("End");
@@ -37,22 +37,22 @@ test("показывает выбранный размер SVG в предела
     .poll(() =>
       qrCode.evaluate((image) => ({
         displayedWidth: image.getBoundingClientRect().width,
-        intrinsicWidth: (image as HTMLImageElement).naturalWidth,
-        containerWidth: image.parentElement!.getBoundingClientRect().width,
+        declaredWidth: image.getAttribute("width"),
+        containerWidth: image.closest("section")!.getBoundingClientRect().width,
       })),
     )
-    .toMatchObject({ intrinsicWidth: 1024 });
+    .toMatchObject({ declaredWidth: "1024" });
 
   const { displayedWidth, containerWidth } = await qrCode.evaluate((image) => ({
     displayedWidth: image.getBoundingClientRect().width,
-    containerWidth: image.parentElement!.getBoundingClientRect().width,
+    containerWidth: image.closest("section")!.getBoundingClientRect().width,
   }));
   expect(displayedWidth).toBeLessThanOrEqual(containerWidth);
   expect(displayedWidth).toBeLessThan(1024);
 
   const bounds = await qrCode.evaluate((image) => {
     const imageBounds = image.getBoundingClientRect();
-    const containerBounds = image.parentElement!.getBoundingClientRect();
+    const containerBounds = image.closest("section")!.getBoundingClientRect();
     return {
       imageTop: imageBounds.top,
       imageBottom: imageBounds.bottom,
@@ -97,9 +97,7 @@ test("добавляет изображение с вырезом и скачи�
 
   await expect(page.getByRole("button", { name: "Remove image" })).toBeVisible();
   const qrCode = page.getByRole("img", { name: "Generated QR code" });
-  await expect
-    .poll(async () => decodeURIComponent((await qrCode.getAttribute("src")) ?? ""))
-    .toContain("<image");
+  await expect(qrCode.locator("image")).toHaveCount(1);
 
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download SVG" }).click();
@@ -110,7 +108,7 @@ test("выбирает уровень коррекции ошибок на ди�
   await page.goto("/");
 
   const qrCode = page.getByRole("img", { name: "Generated QR code" });
-  const initialSource = await qrCode.getAttribute("src");
+  const initialMarkup = await qrCode.innerHTML();
   const errorCorrection = page.getByRole("slider", { name: "Error correction level" });
 
   await expect(errorCorrection).toHaveValue("3");
@@ -124,7 +122,7 @@ test("выбирает уровень коррекции ошибок на ди�
   await expect(
     page.getByText("Error correction level: Q — Quartile", { exact: true }),
   ).toBeVisible();
-  await expect(qrCode).not.toHaveAttribute("src", initialSource!);
+  await expect.poll(() => qrCode.innerHTML()).not.toBe(initialMarkup);
 });
 
 test("показывает настройки профиля Rounded как в макете", async ({ page }) => {

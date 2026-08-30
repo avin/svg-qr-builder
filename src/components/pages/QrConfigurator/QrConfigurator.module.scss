@@ -301,13 +301,17 @@
   overflow: hidden;
 }
 .qrCode {
+  display: contents;
+}
+.qrCode > svg {
   position: absolute;
   inset: 20px;
+  width: auto;
+  height: auto;
   max-width: calc(100% - 40px);
   max-height: calc(100% - 40px);
   margin: auto;
-  aspect-ratio: 1;
-  object-fit: contain;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 12%);
 }
 .outputColumn {
   display: grid;
@@ -424,7 +428,7 @@
   .preview {
     min-height: 0;
   }
-  .qrCode {
+  .qrCode > svg {
     inset: 24px;
     max-width: calc(100% - 48px);
     max-height: calc(100% - 48px);

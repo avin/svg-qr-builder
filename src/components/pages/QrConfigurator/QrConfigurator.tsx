@@ -12,6 +12,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { QRCode, QRSvg } from "sexy-qr";
 import { ErrorCorrectionSlider } from "./ErrorCorrectionSlider/ErrorCorrectionSlider";
+import { getCenteredCutoutModuleCount } from "./qr-cutout";
 import styles from "./QrConfigurator.module.scss";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
@@ -83,6 +84,16 @@ function formatRoundedValue(value: number) {
   return String(roundToTenths(value));
 }
 
+function addAccessibleName(svg: string, label: string) {
+  const escapedLabel = label
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+
+  return svg.replace("<svg ", `<svg role="img" aria-label="${escapedLabel}" `);
+}
+
 function getPresetSettings(presetName: BuiltInPresetName): RoundingSettings {
   return presetSettings[presetName];
 }
@@ -106,13 +117,13 @@ function createQrSvg(
       const imageWidth = qrSize * (exportSettings.imageSize / 100);
       const imageHeight = imageWidth / image.aspectRatio;
       const cutoutScale = 1 + (exportSettings.imagePadding * 2) / 100;
-      const cutoutWidth = Math.min(
+      const cutoutWidth = getCenteredCutoutModuleCount(
+        ((imageWidth * cutoutScale) / qrSize) * qrCode.size,
         qrCode.size,
-        Math.ceil(((imageWidth * cutoutScale) / qrSize) * qrCode.size),
       );
-      const cutoutHeight = Math.min(
+      const cutoutHeight = getCenteredCutoutModuleCount(
+        ((imageHeight * cutoutScale) / qrSize) * qrCode.size,
         qrCode.size,
-        Math.ceil(((imageHeight * cutoutScale) / qrSize) * qrCode.size),
       );
 
       qrCode.emptyCenter(cutoutWidth, cutoutHeight);
@@ -185,9 +196,9 @@ export function QrConfigurator({ title }: Props) {
     imagePadding,
     imageSize,
   });
-  const qrImageSrc = svg ? `data:image/svg+xml,${encodeURIComponent(svg)}` : null;
-  // oxlint-disable-next-line react-perf/jsx-no-new-object-as-prop -- Размер меняется вместе с состоянием.
-  const qrImageStyle = { width: size, height: size };
+  const previewSvg = svg ? addAccessibleName(svg, t("generatedQrCode")) : null;
+  // oxlint-disable-next-line react-perf/jsx-no-new-object-as-prop -- API React требует объект с SVG-разметкой.
+  const previewSvgMarkup = previewSvg ? { __html: previewSvg } : null;
   function selectPreset(nextPresetName: PresetName) {
     setPresetName(nextPresetName);
 
@@ -424,15 +435,8 @@ export function QrConfigurator({ title }: Props) {
 
         <div className={styles.outputColumn}>
           <section className={styles.preview} aria-label={t("preview")}>
-            {qrImageSrc ? (
-              <img
-                className={styles.qrCode}
-                src={qrImageSrc}
-                alt={t("generatedQrCode")}
-                width={size}
-                height={size}
-                style={qrImageStyle}
-              />
+            {previewSvgMarkup ? (
+              <div className={styles.qrCode} dangerouslySetInnerHTML={previewSvgMarkup} />
             ) : (
               <p role="alert">{t("qrCodeGenerationFailedTryShorterContent")}</p>
             )}
