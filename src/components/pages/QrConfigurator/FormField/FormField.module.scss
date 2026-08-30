@@ -1,0 +1,15 @@
+@use "@/styles/kit" as *;
+
+.root {
+  display: grid;
+  gap: 4px;
+  min-inline-size: 0;
+  color: $colors-gray-700;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.label {
+  color: inherit;
+  font: inherit;
+}

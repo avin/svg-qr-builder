@@ -19,7 +19,7 @@ test.describe("выбор языка", () => {
       "Español",
       "العربية",
       "Français",
-      "Português (Brasil)",
+      "Português",
       "Русский",
       "日本語",
       "Deutsch",
@@ -47,7 +47,7 @@ test.describe("выбор языка", () => {
     await expect(size).toHaveValue("100");
 
     await size.press("ArrowLeft");
-    await expect(size).toHaveValue("108");
+    await expect(size).toHaveValue("104");
   });
 });
 
@@ -117,7 +117,7 @@ test("показывает выбранный размер SVG в предела
   await expect(qrCode).toHaveAttribute("height", "100");
 
   await size.press("ArrowRight");
-  await expect(exactSize).toHaveValue("108");
+  await expect(exactSize).toHaveValue("104");
 
   await size.press("End");
 
@@ -160,7 +160,7 @@ test("сохраняет высоту предпросмотра и выравн
 
   const preview = page.getByRole("region", { name: "Preview" });
   const controls = page.locator("form");
-  const exportPanel = page.getByRole("region", { name: "Export settings" });
+  const exportPanel = page.getByRole("group", { name: "Export settings" });
   const initialHeight = await preview.evaluate((element) => element.getBoundingClientRect().height);
 
   await page.getByRole("slider", { name: "SVG size" }).press("End");
@@ -169,7 +169,10 @@ test("сохраняет высоту предпросмотра и выравн
     .poll(() => preview.evaluate((element) => element.getBoundingClientRect().height))
     .toBe(initialHeight);
   const [controlsBottom, exportBottom] = await Promise.all([
-    controls.evaluate((element) => element.getBoundingClientRect().bottom),
+    controls
+      .locator(":scope > div")
+      .first()
+      .evaluate((element) => element.getBoundingClientRect().bottom),
     exportPanel.evaluate((element) => element.getBoundingClientRect().bottom),
   ]);
   expect(Math.abs(controlsBottom - exportBottom)).toBeLessThanOrEqual(1);
@@ -321,18 +324,20 @@ test("показывает настройки профиля Rounded как в �
   await expect(page.getByRole("slider", { name: "Corner rounding", exact: true })).toHaveValue(
     "0.4",
   );
-  await expect(page.getByText("Corner rounding: 40%", { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole("group", { name: "Corner rounding", exact: true }).getByRole("status"),
+  ).toHaveText("40%");
 });
 
 test("ограничивает диапазоны скругления", async ({ page }) => {
   await page.goto("/");
   await page
     .getByRole("tablist", { name: "Rounding data cells" })
-    .getByRole("tab", { name: "Manual" })
+    .getByRole("tab", { name: "Advanced" })
     .click();
   await page
     .getByRole("tablist", { name: "Rounding corner cells" })
-    .getByRole("tab", { name: "Manual" })
+    .getByRole("tab", { name: "Advanced" })
     .click();
 
   const expectedMaximums = {
@@ -361,7 +366,7 @@ test("переключает связанную и ручную настройк
   await linkedRounding.press("ArrowLeft");
   const manualTab = page
     .getByRole("tablist", { name: "Rounding corner cells" })
-    .getByRole("tab", { name: "Manual" });
+    .getByRole("tab", { name: "Advanced" });
   await manualTab.click();
   await expect(manualTab).toHaveAttribute("aria-selected", "true");
 
@@ -386,7 +391,7 @@ test("переключает связанную и ручную настройк
 
   const manualTab = page
     .getByRole("tablist", { name: "Rounding data cells" })
-    .getByRole("tab", { name: "Manual" });
+    .getByRole("tab", { name: "Advanced" });
   await manualTab.click();
 
   await expect(page.getByRole("slider", { name: "Data convex corners" })).toHaveValue("0.7");

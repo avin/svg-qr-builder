@@ -1,0 +1,176 @@
+@use "@/styles/kit" as *;
+
+.selectField {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  color: $colors-gray-700;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.selectTrigger {
+  display: flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px 8px 12px;
+  border: 1px solid $colors-gray-300;
+  border-radius: 8px;
+  outline: 0;
+  background: $colors-base-white;
+  color: $colors-base-black;
+  font-size: 0.875rem;
+  text-align: start;
+  cursor: default;
+}
+
+.selectTrigger:hover {
+  border-color: $colors-gray-400;
+}
+
+.selectTrigger:focus-visible {
+  border-color: $colors-gray-700;
+  box-shadow: 0 0 0 3px $colors-gray-200;
+}
+
+.selectIcon {
+  display: grid;
+  color: $colors-gray-600;
+  transition: transform 150ms;
+}
+
+.selectTrigger[data-popup-open] .selectIcon {
+  transform: rotate(180deg);
+}
+
+.selectPositioner {
+  z-index: 10;
+  outline: 0;
+}
+
+.selectPopup {
+  box-sizing: border-box;
+  min-width: var(--anchor-width);
+  max-height: var(--available-height);
+  padding: 4px;
+  overflow-y: auto;
+  border: 1px solid $colors-gray-200;
+  border-radius: 8px;
+  outline: 0;
+  background: $colors-base-white;
+  box-shadow:
+    0 10px 30px rgb(0 0 0 / 10%),
+    0 2px 8px rgb(0 0 0 / 6%);
+  transform-origin: var(--transform-origin);
+  transition:
+    opacity 120ms,
+    transform 120ms;
+}
+
+.selectPopup[data-starting-style],
+.selectPopup[data-ending-style] {
+  opacity: 0;
+  transform: scale(0.98);
+}
+
+.selectItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 34px;
+  padding: 5px 8px;
+  border-radius: 5px;
+  outline: 0;
+  color: $colors-base-black;
+  font-size: 0.875rem;
+  cursor: default;
+  user-select: none;
+}
+
+.selectItem[data-selected] {
+  font-weight: 650;
+}
+
+.selectItem[data-highlighted] {
+  background: $colors-gray-100;
+}
+
+.selectItemIndicator {
+  order: 2;
+  display: grid;
+  flex: none;
+  place-items: center;
+  color: $colors-base-black;
+}
+
+.selectItemText {
+  min-width: 0;
+}
+
+.tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3px;
+  border-radius: 8px;
+  background: $colors-gray-100;
+}
+
+.tabsRoot {
+  display: grid;
+  gap: 14px;
+}
+
+.tab {
+  position: relative;
+  z-index: 1;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  outline: 0;
+  background: transparent;
+  color: $colors-gray-600;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tab[data-selected] {
+  color: $colors-base-black;
+}
+
+.tab:focus-visible {
+  box-shadow: inset 0 0 0 2px $colors-gray-700;
+}
+
+.tabIndicator {
+  position: absolute;
+  inset-block: 3px;
+  left: var(--active-tab-left);
+  box-sizing: border-box;
+  width: var(--active-tab-width);
+  border: 1px solid $colors-gray-200;
+  border-radius: 6px;
+  background: $colors-base-white;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+  transition:
+    left 160ms ease,
+    width 160ms ease;
+}
+
+.manualControls {
+  display: grid;
+  gap: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .selectIcon,
+  .selectPopup,
+  .tabIndicator {
+    transition: none;
+  }
+}

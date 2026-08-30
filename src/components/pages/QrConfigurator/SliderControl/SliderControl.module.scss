@@ -1,0 +1,72 @@
+@use "@/styles/kit" as *;
+
+.control {
+  display: flex;
+  align-items: center;
+  height: 18px;
+  padding-block: 7px;
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.track {
+  position: relative;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: $colors-gray-200;
+}
+
+.indicator {
+  border-radius: inherit;
+  background: $colors-base-black;
+}
+
+.thumb {
+  z-index: 1;
+  box-sizing: border-box;
+  width: 16px;
+  height: 16px;
+  border: 1px solid $colors-gray-300;
+  border-radius: 50%;
+  outline: 0;
+  background: $colors-base-white;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 18%);
+  transition:
+    box-shadow 120ms,
+    transform 120ms;
+}
+
+.default .thumb:hover {
+  transform: scale(1.08);
+}
+
+.thumb:has(input:focus-visible) {
+  border-color: $colors-gray-700;
+  box-shadow: 0 0 0 3px $colors-gray-200;
+}
+
+.discrete {
+  height: 20px;
+  padding-block: 0;
+}
+
+.discrete .thumb {
+  border: 2px solid $colors-base-black;
+  background: $colors-base-black;
+  transition:
+    box-shadow 120ms,
+    inset-inline-start 120ms;
+}
+
+.discrete .thumb:hover {
+  box-shadow: 0 0 0 3px $colors-gray-200;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .thumb,
+  .discrete .thumb {
+    transition: none;
+  }
+}

@@ -1,0 +1,52 @@
+@use "@/styles/kit" as *;
+
+.control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 38px;
+  padding: 4px 10px 4px 5px;
+  border: 1px solid $colors-gray-300;
+  border-radius: 8px;
+}
+
+.control:has(input:disabled) {
+  opacity: 0.5;
+}
+
+.control input {
+  width: 30px;
+  height: 28px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  box-shadow: 0 0 0 1px $colors-gray-300;
+  cursor: pointer;
+}
+
+.control input:disabled {
+  cursor: not-allowed;
+}
+
+.control input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.control input::-webkit-color-swatch {
+  border: 0;
+  border-radius: 5px;
+}
+
+.control input::-moz-color-swatch {
+  border: 0;
+  border-radius: 5px;
+}
+
+.control output {
+  color: $colors-gray-700;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+}

@@ -1,36 +1,11 @@
 @use "@/styles/kit" as *;
 
-.field {
-  display: grid;
-  gap: 8px;
-  color: $colors-gray-700;
-  font-size: 0.8125rem;
-  font-weight: 500;
-}
-
 .label output {
   color: $colors-base-black;
 }
 
 .slider {
   padding-block-start: 4px;
-}
-
-.control {
-  display: flex;
-  align-items: center;
-  height: 20px;
-  cursor: pointer;
-  touch-action: none;
-  user-select: none;
-}
-
-.track {
-  position: relative;
-  width: 100%;
-  height: 4px;
-  border-radius: 999px;
-  background: $colors-gray-200;
 }
 
 .markers {
@@ -54,29 +29,6 @@
   background: $colors-base-white;
 }
 
-.thumb {
-  z-index: 1;
-  box-sizing: border-box;
-  width: 16px;
-  height: 16px;
-  border: 2px solid $colors-base-black;
-  border-radius: 50%;
-  outline: 0;
-  background: $colors-base-black;
-  transition:
-    box-shadow 120ms,
-    inset-inline-start 120ms;
-}
-
-.thumb:hover {
-  box-shadow: 0 0 0 3px $colors-gray-200;
-}
-
-.thumb:has(input:focus-visible) {
-  border-color: $colors-gray-700;
-  box-shadow: 0 0 0 3px $colors-gray-200;
-}
-
 .positions {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -88,10 +40,4 @@
 .positions [data-selected] {
   color: $colors-base-black;
   font-weight: 650;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .thumb {
-    transition: none;
-  }
 }

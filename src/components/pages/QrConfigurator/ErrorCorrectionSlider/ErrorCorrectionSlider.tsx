@@ -1,5 +1,7 @@
 import { Slider } from "@base-ui/react/slider";
 import { useTranslation } from "react-i18next";
+import { FormField } from "../FormField/FormField";
+import { SliderControl } from "../SliderControl/SliderControl";
 import styles from "./ErrorCorrectionSlider.module.scss";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
@@ -40,10 +42,7 @@ export function ErrorCorrectionSlider({ value, onChange }: Props) {
   const valueIndex = levels.indexOf(value);
 
   return (
-    <div className={styles.field}>
-      <span className={styles.label}>
-        {t("errorCorrectionLevel")}: <output>{`${value} — ${t(labelKeys[value])}`}</output>
-      </span>
+    <FormField name="errorCorrectionLevel">
       <Slider.Root
         className={styles.slider}
         value={getSliderValue(valueIndex)}
@@ -55,20 +54,17 @@ export function ErrorCorrectionSlider({ value, onChange }: Props) {
           onChange(levels[getLevelIndex(nextValue as number, valueIndex, details.reason)])
         }
       >
-        <Slider.Control className={styles.control}>
-          <Slider.Track className={styles.track}>
-            <div className={styles.markers} aria-hidden="true">
-              {levels.map((level) => (
-                <span className={styles.marker} key={level} />
-              ))}
-            </div>
-            <Slider.Thumb
-              className={styles.thumb}
-              aria-label={t("errorCorrectionLevel")}
-              aria-valuetext={`${value} — ${t(labelKeys[value])}`}
-            />
-          </Slider.Track>
-        </Slider.Control>
+        <div className={styles.label}>
+          <Slider.Label>{t("errorCorrectionLevel")}:</Slider.Label>{" "}
+          <Slider.Value>{() => `${value} — ${t(labelKeys[value])}`}</Slider.Value>
+        </div>
+        <SliderControl variant="discrete" ariaValueText={`${value} — ${t(labelKeys[value])}`}>
+          <div className={styles.markers} aria-hidden="true">
+            {levels.map((level) => (
+              <span className={styles.marker} key={level} />
+            ))}
+          </div>
+        </SliderControl>
       </Slider.Root>
       <div className={styles.positions} aria-hidden="true">
         {levels.map((level, index) => (
@@ -77,6 +73,6 @@ export function ErrorCorrectionSlider({ value, onChange }: Props) {
           </span>
         ))}
       </div>
-    </div>
+    </FormField>
   );
 }

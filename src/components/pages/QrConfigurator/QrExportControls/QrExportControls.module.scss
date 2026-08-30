@@ -1,0 +1,117 @@
+@use "@/styles/kit" as *;
+
+.exportPanel {
+  box-sizing: border-box;
+  padding: 20px;
+  border: 1px solid $colors-gray-200;
+  border-radius: 12px;
+  background: $colors-base-white;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 4%);
+}
+
+.exportControls {
+  display: grid;
+  gap: 20px;
+}
+
+.checkboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.checkbox {
+  position: relative;
+  inset-block-start: -1px;
+  display: inline-grid;
+  box-sizing: border-box;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 1px solid $colors-gray-400;
+  border-radius: 3px;
+  outline: 0;
+  background: $colors-base-white;
+  color: $colors-base-white;
+  place-items: center;
+}
+
+.checkbox[data-checked] {
+  border-color: $colors-base-black;
+  background: $colors-base-black;
+}
+
+.checkbox:focus-visible {
+  box-shadow: 0 0 0 3px $colors-gray-200;
+}
+
+.checkboxIndicator {
+  display: grid;
+  place-items: center;
+}
+
+.fileButton,
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 1px solid $colors-gray-300;
+  border-radius: 8px;
+  outline: 0;
+  background: $colors-base-white;
+  color: $colors-base-black;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fileButton {
+  min-width: 0;
+  padding: 8px 12px;
+}
+
+.fileButton span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fileInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.iconButton {
+  flex: none;
+  width: 38px;
+  padding: 0;
+}
+
+.fileButton:focus-within,
+.iconButton:focus-visible {
+  box-shadow: 0 0 0 3px $colors-gray-200;
+}
+
+.imageActions {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+
+.imageActions .fileButton {
+  flex: 1;
+}
+
+@media (min-width: 768px) {
+  .exportControls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}

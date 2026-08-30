@@ -1,0 +1,28 @@
+@use "@/styles/kit" as *;
+
+.textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 92px;
+  resize: vertical;
+  padding: 10px 12px;
+  border: 1px solid $colors-gray-300;
+  border-radius: 8px;
+  outline: 0;
+  background: $colors-base-white;
+  color: $colors-base-black;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  transition:
+    border-color 120ms,
+    box-shadow 120ms;
+}
+
+.textarea:hover {
+  border-color: $colors-gray-400;
+}
+
+.textarea:focus-visible {
+  border-color: $colors-gray-700;
+  box-shadow: 0 0 0 3px $colors-gray-200;
+}

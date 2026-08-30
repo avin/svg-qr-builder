@@ -1,0 +1,34 @@
+@use "@/styles/kit" as *;
+
+.root {
+  display: grid;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  gap: 14px;
+  align-content: start;
+}
+
+.root.isCompact {
+  gap: 12px;
+}
+
+.legend {
+  margin: 0;
+  padding: 0;
+  color: $colors-base-black;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
