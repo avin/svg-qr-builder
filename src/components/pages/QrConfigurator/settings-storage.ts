@@ -1,4 +1,4 @@
-import { initialSettings } from "./settings";
+import { cornerRadiusMaximums, initialSettings, svgSizeMinimum } from "./settings";
 import type { EmbeddedImage, QrSettings } from "./types";
 
 const storageKey = "svgQrBuilder.settings";
@@ -17,6 +17,14 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function isFiniteNumber(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value);
+}
+
+function isNumberInRange(value: unknown, minimum: number, maximum = Number.POSITIVE_INFINITY) {
+  return isFiniteNumber(value) && value >= minimum && value <= maximum;
+}
+
+function isHexColor(value: unknown): value is string {
+  return typeof value === "string" && /^#[0-9a-f]{6}$/i.test(value);
 }
 
 function isEmbeddedImage(value: unknown): value is EmbeddedImage | null {
@@ -42,22 +50,23 @@ function isQrSettings(value: unknown): value is QrSettings {
   return (
     typeof value.content === "string" &&
     ["L", "M", "Q", "H"].includes(value.errorCorrectionLevel as string) &&
-    typeof value.fill === "string" &&
-    isFiniteNumber(value.size) &&
+    isHexColor(value.fill) &&
+    Number.isInteger(value.size) &&
+    isNumberInRange(value.size, svgSizeMinimum) &&
     ["square", "rounded", "custom"].includes(value.presetName as string) &&
     ["linked", "manual"].includes(value.dataRoundingMode as string) &&
     ["linked", "manual"].includes(value.cornerRoundingMode as string) &&
-    isFiniteNumber(rounding.dataOuter) &&
-    isFiniteNumber(rounding.dataInner) &&
-    isFiniteNumber(rounding.cornerRingOuter) &&
-    isFiniteNumber(rounding.cornerRingInner) &&
-    isFiniteNumber(rounding.cornerCenterOuter) &&
-    typeof exportSettings.background === "string" &&
+    isNumberInRange(rounding.dataOuter, 0, 2) &&
+    isNumberInRange(rounding.dataInner, 0, 2) &&
+    isNumberInRange(rounding.cornerRingOuter, 0, cornerRadiusMaximums.ringOuter) &&
+    isNumberInRange(rounding.cornerRingInner, 0, cornerRadiusMaximums.ringInner) &&
+    isNumberInRange(rounding.cornerCenterOuter, 0, cornerRadiusMaximums.centerOuter) &&
+    isHexColor(exportSettings.background) &&
     typeof exportSettings.isBackgroundEnabled === "boolean" &&
-    isFiniteNumber(exportSettings.padding) &&
+    isNumberInRange(exportSettings.padding, 0, 20) &&
     isEmbeddedImage(exportSettings.embeddedImage) &&
-    isFiniteNumber(exportSettings.imagePadding) &&
-    isFiniteNumber(exportSettings.imageSize)
+    isNumberInRange(exportSettings.imagePadding, 0, 20) &&
+    isNumberInRange(exportSettings.imageSize, 8, 50)
   );
 }
 

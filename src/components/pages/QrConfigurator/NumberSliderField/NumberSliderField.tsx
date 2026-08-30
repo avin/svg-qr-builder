@@ -1,5 +1,5 @@
 import { Field } from "@base-ui/react/field";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormField, FormFieldLabel } from "../FormField/FormField";
 import { RangeControl } from "../RangeControl/RangeControl";
 import styles from "./NumberSliderField.module.scss";
@@ -28,6 +28,10 @@ export function NumberSliderField({
   onChange,
 }: Props) {
   const [inputValue, setInputValue] = useState(String(value));
+
+  useEffect(() => {
+    setInputValue(String(value));
+  }, [value]);
 
   function setNumberInput(nextInputValue: string) {
     setInputValue(nextInputValue);

@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { initialSettings } from "./settings";
 import { loadQrSettings, maximumStoredImageBytes, saveQrSettings } from "./settings-storage";
 import type { QrSettings } from "./types";
@@ -39,6 +39,14 @@ describe("хранение настроек QR-конфигуратора", () =
     localStorage.clear();
   });
 
+  afterEach(() => {
+    vi.restoreAllMocks();
+  });
+
+  it("использует начальные параметры при отсутствии сохранённых данных", () => {
+    expect(loadQrSettings()).toEqual(initialSettings);
+  });
+
   it("восстанавливает все параметры формы вместе с изображением", () => {
     const settings = createSettings();
 
@@ -69,5 +77,34 @@ describe("хранение настроек QR-конфигуратора", () =
     localStorage.setItem("svgQrBuilder.settings", "{broken");
 
     expect(loadQrSettings()).toEqual(initialSettings);
+  });
+
+  it.each([
+    ["неверной версии", { version: 2, settings: createSettings() }],
+    ["неполной структуре", { version: 1, settings: { content: "test" } }],
+    ["недопустимом размере", { version: 1, settings: { ...createSettings(), size: -1 } }],
+    [
+      "недопустимом отступе",
+      {
+        version: 1,
+        settings: {
+          ...createSettings(),
+          export: { ...createSettings().export, padding: 1000 },
+        },
+      },
+    ],
+    ["недопустимом цвете", { version: 1, settings: { ...createSettings(), fill: "red<rect" } }],
+  ])("использует начальные параметры при %s", (_name, storedValue) => {
+    localStorage.setItem("svgQrBuilder.settings", JSON.stringify(storedValue));
+
+    expect(loadQrSettings()).toEqual(initialSettings);
+  });
+
+  it("не бросает ошибку, если хранилище недоступно", () => {
+    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+      throw new DOMException("Quota exceeded", "QuotaExceededError");
+    });
+
+    expect(() => saveQrSettings(createSettings())).not.toThrow();
   });
 });

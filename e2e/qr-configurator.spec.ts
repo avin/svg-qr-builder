@@ -85,6 +85,49 @@ test("обновляет QR-код через настройки нового AP
   await expect.poll(() => qrCode.innerHTML()).not.toBe(initialMarkup);
 });
 
+test("восстанавливается после ошибки генерации QR-кода", async ({ page }) => {
+  await page.goto("/");
+
+  const payload = page.getByLabel("Payload");
+  const downloadButton = page.getByRole("button", { name: "Download SVG" });
+  await payload.fill("");
+
+  await expect(page.getByRole("alert")).toContainText("The QR code could not be generated");
+  await expect(downloadButton).toBeDisabled();
+
+  await payload.fill("restored");
+  await expect(page.getByRole("img", { name: "Generated QR code" })).toBeVisible();
+  await expect(downloadButton).toBeEnabled();
+});
+
+test("запускается без доступа к локальному хранилищу", async ({ page }) => {
+  await page.addInitScript(() => {
+    Object.defineProperty(window, "localStorage", {
+      configurable: true,
+      get() {
+        throw new DOMException("Blocked", "SecurityError");
+      },
+    });
+  });
+
+  await page.goto("/");
+
+  await expect(page.getByRole("heading", { name: "SVG QR Builder" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Generated QR code" })).toBeVisible();
+});
+
+test("остаётся доступным на узком экране", async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 800 });
+  await page.goto("/");
+
+  await expect(page.getByLabel("Payload")).toBeVisible();
+  await expect(page.getByRole("img", { name: "Generated QR code" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Download SVG" })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
+});
+
 test("восстанавливает параметры формы и выбранное изображение после перезагрузки", async ({
   page,
 }) => {

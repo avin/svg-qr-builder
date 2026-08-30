@@ -56,10 +56,15 @@ function getBrowserLanguage(availableLanguages: Language[]): Language | undefine
 }
 
 function resolveLanguage(availableLanguages: Language[]): Language {
-  const selectedLanguage = getAvailableLanguage(
-    localStorage.getItem(selectedLanguageStorageKey),
-    availableLanguages,
-  );
+  let storedLanguage: string | null = null;
+
+  try {
+    storedLanguage = localStorage.getItem(selectedLanguageStorageKey);
+  } catch {
+    // Приложение продолжает работать, если браузер запретил доступ к хранилищу.
+  }
+
+  const selectedLanguage = getAvailableLanguage(storedLanguage, availableLanguages);
 
   return (
     selectedLanguage ??
@@ -76,7 +81,11 @@ async function applyLanguage(dispatch: AppDispatch, language: Language): Promise
 
 export function changeSelectedLanguage(language: Language) {
   return async (dispatch: AppDispatch): Promise<void> => {
-    localStorage.setItem(selectedLanguageStorageKey, language);
+    try {
+      localStorage.setItem(selectedLanguageStorageKey, language);
+    } catch {
+      // Выбор применяется в текущей вкладке, даже если его нельзя сохранить.
+    }
     await applyLanguage(dispatch, language);
   };
 }
