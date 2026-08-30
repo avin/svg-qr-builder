@@ -85,6 +85,18 @@ test("обновляет QR-код через настройки нового AP
   await expect.poll(() => qrCode.innerHTML()).not.toBe(initialMarkup);
 });
 
+test("применяет выбранный цвет к QR-коду", async ({ page }) => {
+  await page.goto("/");
+
+  const qrColor = page.getByLabel("QR color");
+  const qrPath = page.getByRole("img", { name: "Generated QR code" }).locator("path").first();
+
+  await qrColor.fill("#c026d3");
+
+  await expect(qrColor).toHaveValue("#c026d3");
+  await expect(qrPath).toHaveCSS("fill", "rgb(192, 38, 211)");
+});
+
 test("показывает выбранный размер SVG в пределах контейнера", async ({ page }) => {
   await page.goto("/");
 
