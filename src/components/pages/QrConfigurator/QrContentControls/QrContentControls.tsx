@@ -27,7 +27,7 @@ export function QrContentControls({
         <FormFieldLabel>{t("payload")}</FormFieldLabel>
         <Field.Control
           className={styles.textarea}
-          render={<textarea rows={4} dir="auto" />}
+          render={<textarea rows={2} dir="auto" />}
           value={content}
           onValueChange={onContentChange}
         />
