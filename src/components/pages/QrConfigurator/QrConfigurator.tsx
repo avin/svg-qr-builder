@@ -1,5 +1,5 @@
 import { Form } from "@base-ui/react/form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { createQrSvg, isQrImageSafe } from "./qr-svg";
 import { QrAppearanceControls } from "./QrAppearanceControls/QrAppearanceControls";
@@ -7,17 +7,30 @@ import { QrContentControls } from "./QrContentControls/QrContentControls";
 import { QrExportControls } from "./QrExportControls/QrExportControls";
 import { QrPreview } from "./QrPreview/QrPreview";
 import { QrRoundingControls } from "./QrRoundingControls/QrRoundingControls";
-import { initialSettings } from "./settings";
+import { loadQrSettings, saveQrSettings } from "./settings-storage";
 import type { ExportSettings, QrSettings } from "./types";
 import styles from "./QrConfigurator.module.scss";
 
 export function QrConfigurator() {
   const { t } = useTranslation();
-  const [settings, setSettings] = useState<QrSettings>(initialSettings);
-  const { content, errorCorrectionLevel, fill, size, presetName, rounding } = settings;
+  const [settings, setSettings] = useState<QrSettings>(loadQrSettings);
+  const {
+    content,
+    errorCorrectionLevel,
+    fill,
+    size,
+    presetName,
+    dataRoundingMode,
+    cornerRoundingMode,
+    rounding,
+  } = settings;
   const exportSettings = settings.export;
   const svg = createQrSvg(content, errorCorrectionLevel, fill, size, rounding, exportSettings);
   const isEmbeddedImageSafe = isQrImageSafe(content, errorCorrectionLevel, exportSettings);
+
+  useEffect(() => {
+    saveQrSettings(settings);
+  }, [settings]);
 
   function updateSettings(patch: Partial<QrSettings>) {
     setSettings((current) => ({ ...current, ...patch }));
@@ -56,9 +69,13 @@ export function QrConfigurator() {
           <QrRoundingControls
             presetName={presetName}
             rounding={rounding}
+            dataRoundingMode={dataRoundingMode}
+            cornerRoundingMode={cornerRoundingMode}
             onChange={(nextPresetName, nextRounding) =>
               updateSettings({ presetName: nextPresetName, rounding: nextRounding })
             }
+            onDataRoundingModeChange={(mode) => updateSettings({ dataRoundingMode: mode })}
+            onCornerRoundingModeChange={(mode) => updateSettings({ cornerRoundingMode: mode })}
           />
         </div>
 

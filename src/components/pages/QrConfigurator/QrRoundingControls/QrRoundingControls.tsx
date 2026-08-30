@@ -1,7 +1,6 @@
 import { Select } from "@base-ui/react/select";
 import { Tabs } from "@base-ui/react/tabs";
 import { IconCheck, IconChevronDown } from "@tabler/icons-react";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FormField } from "../FormField/FormField";
 import { FormFieldset } from "../FormFieldset/FormFieldset";
@@ -26,13 +25,23 @@ const presetLabelKeys = {
 interface Props {
   presetName: PresetName;
   rounding: RoundingSettings;
+  dataRoundingMode: RoundingMode;
+  cornerRoundingMode: RoundingMode;
   onChange: (presetName: PresetName, rounding: RoundingSettings) => void;
+  onDataRoundingModeChange: (mode: RoundingMode) => void;
+  onCornerRoundingModeChange: (mode: RoundingMode) => void;
 }
 
-export function QrRoundingControls({ presetName, rounding, onChange }: Props) {
+export function QrRoundingControls({
+  presetName,
+  rounding,
+  dataRoundingMode,
+  cornerRoundingMode,
+  onChange,
+  onDataRoundingModeChange,
+  onCornerRoundingModeChange,
+}: Props) {
   const { t } = useTranslation();
-  const [dataRoundingMode, setDataRoundingMode] = useState<RoundingMode>("linked");
-  const [cornerRoundingMode, setCornerRoundingMode] = useState<RoundingMode>("linked");
 
   function selectPreset(nextPresetName: PresetName) {
     onChange(
@@ -102,7 +111,7 @@ export function QrRoundingControls({ presetName, rounding, onChange }: Props) {
         <Tabs.Root
           className={styles.tabsRoot}
           value={dataRoundingMode}
-          onValueChange={(value) => setDataRoundingMode(value as RoundingMode)}
+          onValueChange={(value) => onDataRoundingModeChange(value as RoundingMode)}
         >
           <Tabs.List className={styles.tabs} aria-label={t("roundingDataCells")}>
             <Tabs.Tab className={styles.tab} value="linked">
@@ -145,7 +154,7 @@ export function QrRoundingControls({ presetName, rounding, onChange }: Props) {
         <Tabs.Root
           className={styles.tabsRoot}
           value={cornerRoundingMode}
-          onValueChange={(value) => setCornerRoundingMode(value as RoundingMode)}
+          onValueChange={(value) => onCornerRoundingModeChange(value as RoundingMode)}
         >
           <Tabs.List className={styles.tabs} aria-label={t("roundingCornerCells")}>
             <Tabs.Tab className={styles.tab} value="linked">

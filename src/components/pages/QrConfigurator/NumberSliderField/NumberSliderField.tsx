@@ -33,7 +33,7 @@ export function NumberSliderField({
     setInputValue(nextInputValue);
     const nextValue = Number(nextInputValue);
 
-    if (Number.isInteger(nextValue) && nextValue >= min && nextValue <= max) {
+    if (Number.isInteger(nextValue) && nextValue >= min) {
       onChange(nextValue);
     }
   }
@@ -52,7 +52,6 @@ export function NumberSliderField({
             <Field.Control
               type="number"
               min={min}
-              max={max}
               step={1}
               value={inputValue}
               onValueChange={setNumberInput}
@@ -68,7 +67,7 @@ export function NumberSliderField({
         min={min}
         max={max}
         step={step}
-        value={value}
+        value={Math.min(max, value)}
         isLabelVisuallyHidden
         onChange={setSliderValue}
       />

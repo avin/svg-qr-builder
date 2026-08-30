@@ -1,7 +1,7 @@
 import type { BuiltInPresetName, QrSettings, RoundingSettings } from "./types";
 
 export const svgSizeMinimum = 100;
-export const svgSizeMaximum = 2048;
+export const svgSizeSliderMaximum = 512;
 
 export const cornerRadiusMaximums = {
   ringOuter: 7,
@@ -32,6 +32,8 @@ export const initialSettings: QrSettings = {
   fill: "#212121",
   size: 480,
   presetName: "rounded",
+  dataRoundingMode: "linked",
+  cornerRoundingMode: "linked",
   rounding: presetSettings.rounded,
   export: {
     background: "#ffffff",

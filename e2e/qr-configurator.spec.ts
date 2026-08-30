@@ -85,6 +85,53 @@ test("обновляет QR-код через настройки нового AP
   await expect.poll(() => qrCode.innerHTML()).not.toBe(initialMarkup);
 });
 
+test("восстанавливает параметры формы и выбранное изображение после перезагрузки", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await page.getByLabel("Payload").fill("https://example.com/persisted");
+  await page.getByLabel("QR color").fill("#c026d3");
+  await page.getByRole("spinbutton", { name: "SVG size" }).fill("612");
+  await page.getByRole("checkbox", { name: "Enabled" }).check();
+  await page
+    .getByRole("tablist", { name: "Rounding data cells" })
+    .getByRole("tab", { name: "Advanced" })
+    .click();
+  await page.getByLabel("Upload image").setInputFiles({
+    name: "saved-logo.svg",
+    mimeType: "image/svg+xml",
+    buffer: Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="40" height="20"><rect width="40" height="20" fill="red"/></svg>',
+    ),
+  });
+
+  await expect(page.getByRole("button", { name: "Remove image" })).toBeVisible();
+  await expect
+    .poll(() =>
+      page.evaluate(() =>
+        localStorage.getItem("svgQrBuilder.settings")?.includes("saved-logo.svg"),
+      ),
+    )
+    .toBe(true);
+
+  await page.reload();
+
+  await expect(page.getByLabel("Payload")).toHaveValue("https://example.com/persisted");
+  await expect(page.getByLabel("QR color")).toHaveValue("#c026d3");
+  await expect(page.getByRole("spinbutton", { name: "SVG size" })).toHaveValue("612");
+  await expect(page.getByRole("checkbox", { name: "Enabled" })).toBeChecked();
+  await expect(
+    page
+      .getByRole("tablist", { name: "Rounding data cells" })
+      .getByRole("tab", { name: "Advanced" }),
+  ).toHaveAttribute("aria-selected", "true");
+  await expect(page.getByRole("button", { name: "Remove image" })).toBeVisible();
+  await expect(page.getByRole("img", { name: "Generated QR code" }).locator("image")).toHaveCount(
+    1,
+  );
+});
+
 test("применяет выбранный цвет к QR-коду", async ({ page }) => {
   await page.goto("/");
 
@@ -121,7 +168,12 @@ test("показывает выбранный размер SVG в предела
 
   await size.press("End");
 
-  await expect(exactSize).toHaveValue("2048");
+  await expect(exactSize).toHaveValue("512");
+  await expect(qrCode).toHaveAttribute("width", "512");
+  await expect(qrCode).toHaveAttribute("height", "512");
+
+  await expect(exactSize).not.toHaveAttribute("max");
+  await exactSize.fill("2048");
   await expect(qrCode).toHaveAttribute("width", "2048");
   await expect(qrCode).toHaveAttribute("height", "2048");
   await expect

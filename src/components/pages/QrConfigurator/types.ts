@@ -35,6 +35,8 @@ export interface QrSettings {
   fill: string;
   size: number;
   presetName: PresetName;
+  dataRoundingMode: RoundingMode;
+  cornerRoundingMode: RoundingMode;
   rounding: RoundingSettings;
   export: ExportSettings;
 }
