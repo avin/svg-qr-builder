@@ -52,7 +52,7 @@ export const translations: TranslationTree = {
   arabic: nativeLanguageName("العربية"),
   spanish: nativeLanguageName("Español"),
   simplifiedChinese: nativeLanguageName("简体中文"),
-  brazilianPortuguese: nativeLanguageName("Português (Brasil)"),
+  brazilianPortuguese: nativeLanguageName("Português"),
   german: nativeLanguageName("Deutsch"),
   french: nativeLanguageName("Français"),
   japanese: nativeLanguageName("日本語"),
