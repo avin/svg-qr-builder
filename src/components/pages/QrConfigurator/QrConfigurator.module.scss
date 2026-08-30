@@ -396,6 +396,8 @@
   max-width: calc(100% - 40px);
   max-height: calc(100% - 40px);
   margin: auto;
+}
+.qrCode.hasCanvas > svg {
   box-shadow: 0 1px 6px rgb(0 0 0 / 18%);
 }
 .outputColumn {

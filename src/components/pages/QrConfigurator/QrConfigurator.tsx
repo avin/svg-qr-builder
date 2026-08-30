@@ -225,8 +225,8 @@ export function QrConfigurator() {
   const [dataRoundingMode, setDataRoundingMode] = useState<RoundingMode>("linked");
   const [cornerRoundingMode, setCornerRoundingMode] = useState<RoundingMode>("linked");
   const [background, setBackground] = useState("#ffffff");
-  const [isBackgroundEnabled, setIsBackgroundEnabled] = useState(true);
-  const [padding, setPadding] = useState(4);
+  const [isBackgroundEnabled, setIsBackgroundEnabled] = useState(false);
+  const [padding, setPadding] = useState(0);
   const [embeddedImage, setEmbeddedImage] = useState<EmbeddedImage | null>(null);
   const [imagePadding, setImagePadding] = useState(12);
   const [imageSize, setImageSize] = useState(20);
@@ -518,7 +518,10 @@ export function QrConfigurator() {
               </div>
             ) : null}
             {previewSvgMarkup ? (
-              <div className={styles.qrCode} dangerouslySetInnerHTML={previewSvgMarkup} />
+              <div
+                className={`${styles.qrCode} ${isBackgroundEnabled || padding > 0 ? styles.hasCanvas : ""}`}
+                dangerouslySetInnerHTML={previewSvgMarkup}
+              />
             ) : (
               <p role="alert">{t("qrCodeGenerationFailedTryShorterContent")}</p>
             )}

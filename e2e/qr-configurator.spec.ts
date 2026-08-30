@@ -196,14 +196,35 @@ test("включает и выключает фон SVG", async ({ page }) => {
   const backgroundColor = page.getByLabel("Background color");
   const qrCode = page.getByRole("img", { name: "Generated QR code" });
 
-  await expect(backgroundEnabled).toBeChecked();
-  await expect(backgroundColor).toBeEnabled();
-  await expect(qrCode.locator(":scope > rect")).toHaveCount(1);
-
-  await backgroundEnabled.uncheck();
-
+  await expect(backgroundEnabled).not.toBeChecked();
   await expect(backgroundColor).toBeDisabled();
   await expect(qrCode.locator(":scope > rect")).toHaveCount(0);
+
+  await backgroundEnabled.check();
+
+  await expect(backgroundColor).toBeEnabled();
+  await expect(qrCode.locator(":scope > rect")).toHaveCount(1);
+});
+
+test("показывает тень SVG только при наличии фона или отступа", async ({ page }) => {
+  await page.goto("/");
+
+  const qrCode = page.getByRole("img", { name: "Generated QR code" });
+  const backgroundEnabled = page.getByRole("checkbox", { name: "Enabled" });
+  const qrPadding = page.getByRole("slider", { name: "QR padding" });
+
+  await expect(qrPadding).toHaveValue("0");
+  await expect(qrCode).toHaveCSS("box-shadow", "none");
+
+  await backgroundEnabled.check();
+  await expect(qrCode).not.toHaveCSS("box-shadow", "none");
+
+  await backgroundEnabled.uncheck();
+  await expect(qrCode).toHaveCSS("box-shadow", "none");
+
+  await qrPadding.press("ArrowRight");
+  await expect(qrPadding).toHaveValue("1");
+  await expect(qrCode).not.toHaveCSS("box-shadow", "none");
 });
 
 test("добавляет изображение с вырезом и скачивает SVG", async ({ page }) => {
