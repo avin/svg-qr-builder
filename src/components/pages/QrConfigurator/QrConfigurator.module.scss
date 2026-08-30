@@ -18,7 +18,8 @@
   gap: 16px;
 }
 .controls,
-.preview {
+.preview,
+.exportPanel {
   box-sizing: border-box;
   border: 1px solid $rd-colors-gray-200;
   border-radius: 12px;
@@ -293,19 +294,111 @@
 }
 .preview {
   display: grid;
-  align-content: start;
-  justify-items: center;
+  min-height: 320px;
+  place-items: center;
   padding: 20px;
+  overflow: hidden;
 }
 .qrCode {
-  box-sizing: border-box;
   max-width: 100%;
+  max-height: 100%;
   height: auto;
   aspect-ratio: 1;
-  padding: clamp(8px, 3vw, 24px);
-  border: 1px solid $rd-colors-gray-150;
+  object-fit: contain;
+}
+.outputColumn {
+  display: grid;
+  min-width: 0;
+  gap: 16px;
+}
+.exportPanel {
+  padding: 20px;
+}
+.panelHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-block-end: 18px;
+}
+.panelHeading h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+.exportControls {
+  display: grid;
+  gap: 20px;
+}
+.exportControls fieldset {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.exportControls legend {
+  margin-block-end: 8px;
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+.primaryButton,
+.fileButton,
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 1px solid $rd-colors-gray-300;
   border-radius: 8px;
+  outline: 0;
   background: $rd-colors-base-white;
+  color: $rd-colors-base-black;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.primaryButton {
+  padding: 8px 12px;
+  border-color: $rd-colors-base-black;
+  background: $rd-colors-base-black;
+  color: $rd-colors-base-white;
+}
+.fileButton {
+  min-width: 0;
+  padding: 8px 12px;
+}
+.fileButton span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.fileButton input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+.iconButton {
+  flex: none;
+  width: 38px;
+  padding: 0;
+}
+.primaryButton:focus-visible,
+.fileButton:focus-within,
+.iconButton:focus-visible {
+  box-shadow: 0 0 0 3px $rd-colors-brand-100;
+}
+.imageActions {
+  display: flex;
+  gap: 8px;
+  min-width: 0;
+}
+.imageActions .fileButton {
+  flex: 1;
 }
 @media (min-width: 768px) {
   .page {
@@ -313,15 +406,23 @@
   }
   .workspace {
     grid-template-columns: minmax(300px, 380px) minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
   }
   .controls,
   .preview {
     padding: 24px;
   }
+  .outputColumn {
+    grid-template-rows: minmax(0, 1fr) auto;
+    height: 100%;
+    min-height: 0;
+    contain: size;
+  }
   .preview {
-    position: sticky;
-    top: 24px;
+    min-height: 0;
+  }
+  .exportControls {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
 }
 @media (prefers-reduced-motion: reduce) {

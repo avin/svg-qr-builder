@@ -1,7 +1,13 @@
 import { Select } from "@base-ui/react/select";
 import { Slider } from "@base-ui/react/slider";
 import { Tabs } from "@base-ui/react/tabs";
-import { IconCheck, IconChevronDown } from "@tabler/icons-react";
+import {
+  IconCheck,
+  IconChevronDown,
+  IconDownload,
+  IconTrash,
+  IconUpload,
+} from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { QRCode, QRSvg } from "sexy-qr";
@@ -23,6 +29,20 @@ interface RoundingSettings {
 
 interface Props {
   title: string;
+}
+
+interface EmbeddedImage {
+  name: string;
+  src: string;
+  aspectRatio: number;
+}
+
+interface ExportSettings {
+  background: string;
+  padding: number;
+  embeddedImage: EmbeddedImage | null;
+  imagePadding: number;
+  imageSize: number;
 }
 
 const initialPreset = "rounded" as const;
@@ -73,12 +93,41 @@ function createQrSvg(
   fill: string,
   size: number,
   rounding: RoundingSettings,
+  exportSettings: ExportSettings,
 ) {
   try {
     const qrCode = new QRCode({ content, ecl: errorCorrectionLevel });
+    const outerPadding = size * (exportSettings.padding / 100);
+    const qrSize = size - outerPadding * 2;
+    const image = exportSettings.embeddedImage;
+    let postContent: ((qrSvg: QRSvg) => string) | undefined;
+
+    if (image) {
+      const imageWidth = qrSize * (exportSettings.imageSize / 100);
+      const imageHeight = imageWidth / image.aspectRatio;
+      const cutoutScale = 1 + (exportSettings.imagePadding * 2) / 100;
+      const cutoutWidth = Math.min(
+        qrCode.size,
+        Math.ceil(((imageWidth * cutoutScale) / qrSize) * qrCode.size),
+      );
+      const cutoutHeight = Math.min(
+        qrCode.size,
+        Math.ceil(((imageHeight * cutoutScale) / qrSize) * qrCode.size),
+      );
+
+      qrCode.emptyCenter(cutoutWidth, cutoutHeight);
+      postContent = (qrSvg) => {
+        const width = qrSvg.matrixSize * qrSvg.pointSize * (exportSettings.imageSize / 100);
+        const height = width / image.aspectRatio;
+        const x = (qrSvg.matrixSize * qrSvg.pointSize - width) / 2;
+        const y = (qrSvg.matrixSize * qrSvg.pointSize - height) / 2;
+        return `<image x="${x}" y="${y}" width="${width}" height="${height}" preserveAspectRatio="xMidYMid meet" href="${image.src}" />`;
+      };
+    }
+
     const qrSvg = new QRSvg(qrCode, {
       fill,
-      size,
+      size: qrSize,
       outerCornerRadius: rounding.dataOuter,
       innerCornerRadius: rounding.dataInner,
       cornerBlockOuter: {
@@ -88,9 +137,11 @@ function createQrSvg(
       cornerBlockInner: {
         outerCornerRadius: rounding.cornerCenterOuter,
       },
+      postContent,
     });
 
-    return qrSvg.svg;
+    const svgContent = qrSvg.svg.replace(/^<svg[^>]*>/, "").replace(/<\/svg>$/, "");
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><rect width="100%" height="100%" fill="${exportSettings.background}"/><g transform="translate(${outerPadding} ${outerPadding})">${svgContent}</g></svg>`;
   } catch {
     return null;
   }
@@ -122,7 +173,18 @@ export function QrConfigurator({ title }: Props) {
   );
   const [dataRoundingMode, setDataRoundingMode] = useState<RoundingMode>("linked");
   const [cornerRoundingMode, setCornerRoundingMode] = useState<RoundingMode>("linked");
-  const svg = createQrSvg(content, errorCorrectionLevel, fill, size, rounding);
+  const [background, setBackground] = useState("#ffffff");
+  const [padding, setPadding] = useState(4);
+  const [embeddedImage, setEmbeddedImage] = useState<EmbeddedImage | null>(null);
+  const [imagePadding, setImagePadding] = useState(12);
+  const [imageSize, setImageSize] = useState(20);
+  const svg = createQrSvg(content, errorCorrectionLevel, fill, size, rounding, {
+    background,
+    padding,
+    embeddedImage,
+    imagePadding,
+    imageSize,
+  });
   const qrImageSrc = svg ? `data:image/svg+xml,${encodeURIComponent(svg)}` : null;
   // oxlint-disable-next-line react-perf/jsx-no-new-object-as-prop -- Размер меняется вместе с состоянием.
   const qrImageStyle = { width: size };
@@ -360,22 +422,155 @@ export function QrConfigurator({ title }: Props) {
           </fieldset>
         </form>
 
-        <section className={styles.preview} aria-label={t("preview")}>
-          {qrImageSrc ? (
-            <img
-              className={styles.qrCode}
-              src={qrImageSrc}
-              alt={t("generatedQrCode")}
-              width={size}
-              height={size}
-              style={qrImageStyle}
-            />
-          ) : (
-            <p role="alert">{t("qrCodeGenerationFailedTryShorterContent")}</p>
-          )}
-        </section>
+        <div className={styles.outputColumn}>
+          <section className={styles.preview} aria-label={t("preview")}>
+            {qrImageSrc ? (
+              <img
+                className={styles.qrCode}
+                src={qrImageSrc}
+                alt={t("generatedQrCode")}
+                width={size}
+                height={size}
+                style={qrImageStyle}
+              />
+            ) : (
+              <p role="alert">{t("qrCodeGenerationFailedTryShorterContent")}</p>
+            )}
+          </section>
+          <section className={styles.exportPanel} aria-labelledby="export-settings-title">
+            <div className={styles.panelHeading}>
+              <h2 id="export-settings-title">{t("exportSettings")}</h2>
+              <button
+                className={styles.primaryButton}
+                type="button"
+                disabled={!svg}
+                onClick={() => downloadSvg(svg)}
+              >
+                <IconDownload size={17} stroke={1.8} />
+                {t("downloadSvg")}
+              </button>
+            </div>
+            <div className={styles.exportControls}>
+              <fieldset>
+                <legend>{t("canvas")}</legend>
+                <label className={styles.field}>
+                  <span>{t("backgroundColor")}</span>
+                  <span className={styles.colorControl}>
+                    <input
+                      type="color"
+                      value={background}
+                      onChange={(event) => setBackground(event.target.value)}
+                    />
+                    <output dir="ltr">{background}</output>
+                  </span>
+                </label>
+                <PercentControl
+                  label={t("qrPadding")}
+                  value={padding}
+                  max={20}
+                  onChange={setPadding}
+                />
+              </fieldset>
+              <fieldset>
+                <legend>{t("centerImage")}</legend>
+                <div className={styles.imageActions}>
+                  <label className={styles.fileButton}>
+                    <IconUpload size={17} stroke={1.8} />
+                    <span>{embeddedImage ? embeddedImage.name : t("uploadImage")}</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(event) =>
+                        void readEmbeddedImage(event.currentTarget.files?.[0], setEmbeddedImage)
+                      }
+                    />
+                  </label>
+                  {embeddedImage ? (
+                    <button
+                      className={styles.iconButton}
+                      type="button"
+                      aria-label={t("removeImage")}
+                      onClick={() => setEmbeddedImage(null)}
+                    >
+                      <IconTrash size={17} stroke={1.8} />
+                    </button>
+                  ) : null}
+                </div>
+                <PercentControl
+                  label={t("imageSize")}
+                  value={imageSize}
+                  min={8}
+                  max={30}
+                  onChange={setImageSize}
+                />
+                <PercentControl
+                  label={t("imagePadding")}
+                  value={imagePadding}
+                  max={50}
+                  onChange={setImagePadding}
+                />
+              </fieldset>
+            </div>
+          </section>
+        </div>
       </div>
     </section>
+  );
+}
+
+function downloadSvg(svg: string | null) {
+  if (!svg) {
+    return;
+  }
+  const url = URL.createObjectURL(new Blob([svg], { type: "image/svg+xml;charset=utf-8" }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "qr-code.svg";
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function readEmbeddedImage(file: File | undefined, onLoad: (image: EmbeddedImage) => void) {
+  if (!file) {
+    return;
+  }
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    if (typeof reader.result !== "string") {
+      return;
+    }
+    const image = new Image();
+    image.addEventListener("load", () =>
+      onLoad({
+        name: file.name,
+        src: reader.result as string,
+        aspectRatio: image.naturalWidth / image.naturalHeight,
+      }),
+    );
+    image.src = reader.result;
+  });
+  reader.readAsDataURL(file);
+}
+
+interface PercentControlProps {
+  label: string;
+  value: number;
+  min?: number;
+  max: number;
+  onChange: (value: number) => void;
+}
+
+function PercentControl({ label, value, min = 0, max, onChange }: PercentControlProps) {
+  return (
+    <RadiusControl
+      label={label}
+      value={value}
+      min={min}
+      max={max}
+      step={1}
+      formatValue={(nextValue) => `${nextValue}%`}
+      onChange={onChange}
+    />
   );
 }
 
@@ -383,6 +578,7 @@ interface RadiusControlProps {
   label: string;
   value: number;
   max: number;
+  min?: number;
   step?: number;
   formatValue?: (value: number) => string;
   onChange: (value: number) => void;
@@ -392,6 +588,7 @@ function RadiusControl({
   label,
   value,
   max,
+  min = 0,
   step = 0.1,
   formatValue = formatRoundedValue,
   onChange,
@@ -401,7 +598,14 @@ function RadiusControl({
       <span>
         {label}: <output>{formatValue(value)}</output>
       </span>
-      <RangeControl label={label} min={0} max={max} step={step} value={value} onChange={onChange} />
+      <RangeControl
+        label={label}
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={onChange}
+      />
     </label>
   );
 }

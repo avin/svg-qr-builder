@@ -51,6 +51,48 @@ test("показывает выбранный размер SVG в предела
   expect(displayedWidth).toBeLessThan(1024);
 });
 
+test("сохраняет высоту предпросмотра и выравнивает нижнюю панель", async ({ page }) => {
+  await page.goto("/");
+
+  const preview = page.getByRole("region", { name: "Preview" });
+  const controls = page.locator("form");
+  const exportPanel = page.getByRole("region", { name: "Export settings" });
+  const initialHeight = await preview.evaluate((element) => element.getBoundingClientRect().height);
+
+  await page.getByRole("slider", { name: "SVG size" }).press("End");
+
+  await expect
+    .poll(() => preview.evaluate((element) => element.getBoundingClientRect().height))
+    .toBe(initialHeight);
+  const [controlsBottom, exportBottom] = await Promise.all([
+    controls.evaluate((element) => element.getBoundingClientRect().bottom),
+    exportPanel.evaluate((element) => element.getBoundingClientRect().bottom),
+  ]);
+  expect(Math.abs(controlsBottom - exportBottom)).toBeLessThanOrEqual(1);
+});
+
+test("добавляет изображение с вырезом и скачивает SVG", async ({ page }) => {
+  await page.goto("/");
+
+  await page.getByLabel("Upload image").setInputFiles({
+    name: "wide-logo.svg",
+    mimeType: "image/svg+xml",
+    buffer: Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><rect width="200" height="100" fill="red"/></svg>',
+    ),
+  });
+
+  await expect(page.getByRole("button", { name: "Remove image" })).toBeVisible();
+  const qrCode = page.getByRole("img", { name: "Generated QR code" });
+  await expect
+    .poll(async () => decodeURIComponent((await qrCode.getAttribute("src")) ?? ""))
+    .toContain("<image");
+
+  const download = page.waitForEvent("download");
+  await page.getByRole("button", { name: "Download SVG" }).click();
+  expect((await download).suggestedFilename()).toBe("qr-code.svg");
+});
+
 test("выбирает уровень коррекции ошибок на дискретном слайдере", async ({ page }) => {
   await page.goto("/");
 
