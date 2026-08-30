@@ -21,6 +21,22 @@ test("обновляет QR-код через настройки нового AP
   await expect(qrCode).not.toHaveAttribute("src", initialSource!);
 });
 
+test("показывает настройки профиля Rounded как в макете", async ({ page }) => {
+  await page.goto("/");
+
+  const roundingProfile = page.getByRole("combobox", { name: "Rounding profile" });
+  await expect(roundingProfile).toContainText("Rounded");
+  await roundingProfile.click();
+  await expect(page.getByRole("option")).toHaveText(["Rounded", "Square", "Custom"]);
+  await page.keyboard.press("Escape");
+
+  await expect(page.getByRole("slider", { name: "Data corner rounding" })).toHaveValue("0.8");
+  await expect(page.getByRole("slider", { name: "Corner rounding", exact: true })).toHaveValue(
+    "0.4",
+  );
+  await expect(page.getByText("Corner rounding: 40%", { exact: true })).toBeVisible();
+});
+
 test("ограничивает диапазоны скругления", async ({ page }) => {
   await page.goto("/");
   await page
@@ -52,7 +68,7 @@ test("переключает связанную и ручную настройк
 
   const linkedRounding = page.getByRole("slider", { name: "Corner rounding", exact: true });
   await expect(linkedRounding).toBeVisible();
-  await expect(linkedRounding).toHaveValue("1");
+  await expect(linkedRounding).toHaveValue("0.4");
   await expect(page.getByRole("slider", { name: "Corner ring convex corners" })).not.toBeVisible();
 
   await linkedRounding.press("ArrowLeft");
@@ -62,12 +78,12 @@ test("переключает связанную и ручную настройк
   await manualTab.click();
   await expect(manualTab).toHaveAttribute("aria-selected", "true");
 
-  await expect(page.getByRole("slider", { name: "Corner ring convex corners" })).toHaveValue("6.3");
+  await expect(page.getByRole("slider", { name: "Corner ring convex corners" })).toHaveValue("2.1");
   await expect(page.getByRole("slider", { name: "Corner ring concave corners" })).toHaveValue(
-    "4.5",
+    "1.5",
   );
   await expect(page.getByRole("slider", { name: "Corner center convex corners" })).toHaveValue(
-    "2.7",
+    "0.9",
   );
   await expect(
     page.getByRole("slider", { name: "Corner rounding", exact: true }),
@@ -78,7 +94,7 @@ test("переключает связанную и ручную настройк
   await page.goto("/");
 
   const linkedRounding = page.getByRole("slider", { name: "Data corner rounding" });
-  await expect(linkedRounding).toHaveValue("1");
+  await expect(linkedRounding).toHaveValue("0.8");
   await linkedRounding.press("ArrowLeft");
 
   const manualTab = page
@@ -86,7 +102,7 @@ test("переключает связанную и ручную настройк
     .getByRole("tab", { name: "Manual" });
   await manualTab.click();
 
-  await expect(page.getByRole("slider", { name: "Data convex corners" })).toHaveValue("0.9");
-  await expect(page.getByRole("slider", { name: "Data concave corners" })).toHaveValue("0.9");
+  await expect(page.getByRole("slider", { name: "Data convex corners" })).toHaveValue("0.7");
+  await expect(page.getByRole("slider", { name: "Data concave corners" })).toHaveValue("0.7");
   await expect(page.getByRole("slider", { name: "Data corner rounding" })).not.toBeVisible();
 });

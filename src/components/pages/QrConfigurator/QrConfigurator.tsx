@@ -4,11 +4,12 @@ import { Tabs } from "@base-ui/react/tabs";
 import { IconCheck, IconChevronDown } from "@tabler/icons-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { QRCode, QRSvg, QRSvgPresets } from "sexy-qr";
+import { QRCode, QRSvg } from "sexy-qr";
 import styles from "./QrConfigurator.module.scss";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
-type PresetName = keyof typeof QRSvgPresets | "custom";
+type BuiltInPresetName = "square" | "rounded";
+type PresetName = BuiltInPresetName | "custom";
 type RoundingMode = "linked" | "manual";
 
 interface RoundingSettings {
@@ -23,27 +24,35 @@ interface Props {
   title: string;
 }
 
-const initialPreset = "roundedWithCircleCornerBlocks" as const;
+const initialPreset = "rounded" as const;
 const cornerRadiusMaximums = {
   ringOuter: 7,
   ringInner: 5,
   centerOuter: 3,
 } as const;
+const presetSettings: Record<BuiltInPresetName, RoundingSettings> = {
+  square: {
+    dataOuter: 0,
+    dataInner: 0,
+    cornerRingOuter: 0,
+    cornerRingInner: 0,
+    cornerCenterOuter: 0,
+  },
+  rounded: {
+    dataOuter: 0.8,
+    dataInner: 0.8,
+    cornerRingOuter: cornerRadiusMaximums.ringOuter * 0.4,
+    cornerRingInner: cornerRadiusMaximums.ringInner * 0.4,
+    cornerCenterOuter: cornerRadiusMaximums.centerOuter * 0.4,
+  },
+};
 
 const errorCorrectionLevels: ErrorCorrectionLevel[] = ["L", "M", "Q", "H"];
-const presetNames: PresetName[] = [
-  "square",
-  "rounded",
-  "circleCornerBlocks",
-  "roundedWithCircleCornerBlocks",
-  "custom",
-];
+const presetNames: PresetName[] = ["rounded", "square", "custom"];
 const errorCorrectionLabelKeys = { L: "low", M: "medium", Q: "quartile", H: "high" } as const;
 const presetLabelKeys = {
   square: "square",
   rounded: "rounded",
-  circleCornerBlocks: "circularCornerBlocks",
-  roundedWithCircleCornerBlocks: "roundedCircularCornerBlocks",
   custom: "custom",
 } as const;
 
@@ -55,16 +64,8 @@ function formatRoundedValue(value: number) {
   return String(roundToTenths(value));
 }
 
-function getPresetSettings(presetName: keyof typeof QRSvgPresets): RoundingSettings {
-  const preset = QRSvgPresets[presetName];
-
-  return {
-    dataOuter: preset.outerCornerRadius,
-    dataInner: preset.innerCornerRadius,
-    cornerRingOuter: preset.cornerBlockOuter.outerCornerRadius,
-    cornerRingInner: preset.cornerBlockOuter.innerCornerRadius,
-    cornerCenterOuter: preset.cornerBlockInner.outerCornerRadius,
-  };
+function getPresetSettings(presetName: BuiltInPresetName): RoundingSettings {
+  return presetSettings[presetName];
 }
 
 function createQrSvg(

@@ -20,16 +20,6 @@ export const translations: TranslationTree = {
   roundingProfile: { en: "Rounding profile", ru: "Профиль скругления", ar: "ملف الاستدارة" },
   square: { en: "Square", ru: "Квадратный", ar: "مربع" },
   rounded: { en: "Rounded", ru: "Скруглённый", ar: "مستدير" },
-  circularCornerBlocks: {
-    en: "Circular corner blocks",
-    ru: "Круглые угловые блоки",
-    ar: "كتل زوايا دائرية",
-  },
-  roundedCircularCornerBlocks: {
-    en: "Rounded with circular corner blocks",
-    ru: "Скруглённый с круглыми угловыми блоками",
-    ar: "مستدير مع كتل زوايا دائرية",
-  },
   custom: { en: "Custom", ru: "Пользовательский", ar: "مخصص" },
   dataConvexCorners: {
     en: "Data convex corners",
