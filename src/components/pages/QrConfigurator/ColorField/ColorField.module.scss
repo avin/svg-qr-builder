@@ -1,5 +1,12 @@
 @use "@/styles/kit" as *;
 
+.labelRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .control {
   display: flex;
   align-items: center;

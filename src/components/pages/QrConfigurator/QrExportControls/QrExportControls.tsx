@@ -29,25 +29,31 @@ export function QrExportControls({ settings, onChange }: Props) {
     >
       <div className={styles.exportControls}>
         <FormFieldset legend={t("canvas")} isCompact>
-          <FormField name="isBackgroundEnabled">
-            <FormFieldLabel className={styles.checkboxLabel}>
-              <Checkbox.Root
-                className={styles.checkbox}
-                checked={isBackgroundEnabled}
-                onCheckedChange={(value) => onChange({ isBackgroundEnabled: value })}
-              >
-                <Checkbox.Indicator className={styles.checkboxIndicator}>
-                  <IconCheck size={12} stroke={2.5} />
-                </Checkbox.Indicator>
-              </Checkbox.Root>
-              {t("enabled")}
-            </FormFieldLabel>
-          </FormField>
           <ColorField
             name="background"
             label={t("backgroundColor")}
             value={background}
             isDisabled={!isBackgroundEnabled}
+            labelEnd={
+              <FormField
+                className={styles.checkboxField}
+                name="isBackgroundEnabled"
+                disabled={false}
+              >
+                <FormFieldLabel className={styles.checkboxLabel}>
+                  <Checkbox.Root
+                    className={styles.checkbox}
+                    checked={isBackgroundEnabled}
+                    onCheckedChange={(value) => onChange({ isBackgroundEnabled: value })}
+                  >
+                    <Checkbox.Indicator className={styles.checkboxIndicator}>
+                      <IconCheck size={12} stroke={2.5} />
+                    </Checkbox.Indicator>
+                  </Checkbox.Root>
+                  {t("enabled")}
+                </FormFieldLabel>
+              </FormField>
+            }
             onChange={(value) => onChange({ background: value })}
           />
           <PercentControl

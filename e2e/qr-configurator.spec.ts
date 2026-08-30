@@ -192,6 +192,48 @@ test("не растягивает строки короткой группы н�
   expect(canvasTitleHeight).toBe(centerImageTitleHeight);
 });
 
+test("выравнивает состояния полей справа от подписей", async ({ page }) => {
+  await page.goto("/");
+
+  const backgroundLabel = page.getByText("Background color", { exact: true });
+  const backgroundEnabled = page.getByRole("checkbox", { name: "Enabled" });
+  const correctionGroup = page.getByRole("group", {
+    name: "Error correction level:",
+    exact: true,
+  });
+  const correctionLabel = correctionGroup.getByText("Error correction level:", { exact: true });
+  const correctionValue = correctionGroup.getByRole("status");
+  const svgSizeLabel = page.getByText("SVG size:", { exact: true });
+  const svgSizeInput = page.getByRole("spinbutton", { name: "SVG size" });
+
+  const [
+    backgroundLabelCenter,
+    backgroundEnabledCenter,
+    correctionLabelCenter,
+    correctionValueCenter,
+    svgSizeLabelCenter,
+    svgSizeInputCenter,
+  ] = await Promise.all(
+    [
+      backgroundLabel,
+      backgroundEnabled,
+      correctionLabel,
+      correctionValue,
+      svgSizeLabel,
+      svgSizeInput,
+    ].map((element) =>
+      element.evaluate((node) => {
+        const bounds = node.getBoundingClientRect();
+        return bounds.top + bounds.height / 2;
+      }),
+    ),
+  );
+
+  expect(Math.abs(backgroundLabelCenter - backgroundEnabledCenter)).toBeLessThanOrEqual(2);
+  expect(Math.abs(correctionLabelCenter - correctionValueCenter)).toBeLessThanOrEqual(2);
+  expect(Math.abs(svgSizeLabelCenter - svgSizeInputCenter)).toBeLessThanOrEqual(2);
+});
+
 test("включает и выключает фон SVG", async ({ page }) => {
   await page.goto("/");
 

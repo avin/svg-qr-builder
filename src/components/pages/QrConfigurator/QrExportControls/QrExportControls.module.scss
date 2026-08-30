@@ -21,9 +21,14 @@
   cursor: pointer;
 }
 
+.checkboxField {
+  display: block;
+  color: inherit;
+  font: inherit;
+}
+
 .checkbox {
   position: relative;
-  inset-block-start: -1px;
   display: inline-grid;
   box-sizing: border-box;
   flex: none;
