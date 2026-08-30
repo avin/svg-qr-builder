@@ -72,10 +72,9 @@
   box-shadow: 0 0 0 3px $rd-colors-gray-200;
 }
 
-.thumb:focus-visible {
-  box-shadow:
-    0 0 0 3px $rd-colors-gray-200,
-    0 0 0 1px $rd-colors-gray-700;
+.thumb:has(input:focus-visible) {
+  border-color: $rd-colors-gray-700;
+  box-shadow: 0 0 0 3px $rd-colors-gray-200;
 }
 
 .positions {

@@ -349,10 +349,9 @@
 .sliderThumb:hover {
   transform: scale(1.08);
 }
-.sliderThumb:focus-visible {
-  box-shadow:
-    0 0 0 3px $rd-colors-gray-200,
-    0 0 0 1px $rd-colors-gray-700;
+.sliderThumb:has(input:focus-visible) {
+  border-color: $rd-colors-gray-700;
+  box-shadow: 0 0 0 3px $rd-colors-gray-200;
 }
 .preview {
   position: relative;
