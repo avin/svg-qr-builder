@@ -293,6 +293,7 @@
     0 0 0 1px $rd-colors-brand-700;
 }
 .preview {
+  position: relative;
   display: grid;
   min-height: 320px;
   place-items: center;
@@ -300,9 +301,11 @@
   overflow: hidden;
 }
 .qrCode {
-  max-width: 100%;
-  max-height: 100%;
-  height: auto;
+  position: absolute;
+  inset: 20px;
+  max-width: calc(100% - 40px);
+  max-height: calc(100% - 40px);
+  margin: auto;
   aspect-ratio: 1;
   object-fit: contain;
 }
@@ -420,6 +423,11 @@
   }
   .preview {
     min-height: 0;
+  }
+  .qrCode {
+    inset: 24px;
+    max-width: calc(100% - 48px);
+    max-height: calc(100% - 48px);
   }
   .exportControls {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

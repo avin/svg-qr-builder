@@ -187,7 +187,7 @@ export function QrConfigurator({ title }: Props) {
   });
   const qrImageSrc = svg ? `data:image/svg+xml,${encodeURIComponent(svg)}` : null;
   // oxlint-disable-next-line react-perf/jsx-no-new-object-as-prop -- Размер меняется вместе с состоянием.
-  const qrImageStyle = { width: size };
+  const qrImageStyle = { width: size, height: size };
   function selectPreset(nextPresetName: PresetName) {
     setPresetName(nextPresetName);
 

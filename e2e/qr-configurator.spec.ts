@@ -49,6 +49,19 @@ test("показывает выбранный размер SVG в предела
   }));
   expect(displayedWidth).toBeLessThanOrEqual(containerWidth);
   expect(displayedWidth).toBeLessThan(1024);
+
+  const bounds = await qrCode.evaluate((image) => {
+    const imageBounds = image.getBoundingClientRect();
+    const containerBounds = image.parentElement!.getBoundingClientRect();
+    return {
+      imageTop: imageBounds.top,
+      imageBottom: imageBounds.bottom,
+      containerTop: containerBounds.top,
+      containerBottom: containerBounds.bottom,
+    };
+  });
+  expect(bounds.imageTop).toBeGreaterThanOrEqual(bounds.containerTop);
+  expect(bounds.imageBottom).toBeLessThanOrEqual(bounds.containerBottom);
 });
 
 test("сохраняет высоту предпросмотра и выравнивает нижнюю панель", async ({ page }) => {
