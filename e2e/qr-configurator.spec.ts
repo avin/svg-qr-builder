@@ -251,6 +251,32 @@ test("включает и выключает фон SVG", async ({ page }) => {
   await expect(qrCode.locator(":scope > rect")).toHaveCount(1);
 });
 
+test("не сдвигает настройки после переключения фона", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 2000 });
+  await page.goto("/");
+
+  const backgroundEnabled = page.getByRole("checkbox", { name: "Enabled" });
+  const backgroundColor = page.getByLabel("Background color");
+  const padding = page.getByRole("slider", { name: "QR padding" });
+  const initialTops = await Promise.all(
+    [backgroundColor, padding].map((element) =>
+      element.evaluate((node) => node.getBoundingClientRect().top),
+    ),
+  );
+
+  await backgroundEnabled.check();
+
+  await expect
+    .poll(() =>
+      Promise.all(
+        [backgroundColor, padding].map((element) =>
+          element.evaluate((node) => node.getBoundingClientRect().top),
+        ),
+      ),
+    )
+    .toEqual(initialTops);
+});
+
 test("показывает тень SVG только при наличии фона или отступа", async ({ page }) => {
   await page.goto("/");
 
