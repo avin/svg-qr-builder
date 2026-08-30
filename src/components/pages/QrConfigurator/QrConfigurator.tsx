@@ -4,6 +4,7 @@ import { Slider } from "@base-ui/react/slider";
 import { Tabs } from "@base-ui/react/tabs";
 import {
   IconCheck,
+  IconAlertTriangle,
   IconChevronDown,
   IconDownload,
   IconTrash,
@@ -13,7 +14,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { QRCode, QRSvg } from "sexy-qr";
 import { ErrorCorrectionSlider } from "./ErrorCorrectionSlider/ErrorCorrectionSlider";
-import { getCenteredCutoutModuleCount } from "./qr-cutout";
+import { getCenteredCutoutModuleCount, isQrCutoutWithinErrorCorrection } from "./qr-cutout";
 import styles from "./QrConfigurator.module.scss";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
@@ -49,6 +50,8 @@ interface ExportSettings {
 }
 
 const initialPreset = "rounded" as const;
+const svgSizeMinimum = 100;
+const svgSizeMaximum = 2048;
 const cornerRadiusMaximums = {
   ringOuter: 7,
   ringInner: 5,
@@ -164,6 +167,40 @@ function createQrSvg(
   }
 }
 
+function isQrImageSafe(
+  content: string,
+  errorCorrectionLevel: ErrorCorrectionLevel,
+  embeddedImage: EmbeddedImage | null,
+  imageSize: number,
+  imagePadding: number,
+) {
+  if (!embeddedImage) {
+    return true;
+  }
+
+  try {
+    const qrCode = new QRCode({ content, ecl: errorCorrectionLevel });
+    const cutoutScale = 1 + (imagePadding * 2) / 100;
+    const cutoutWidth = getCenteredCutoutModuleCount(
+      (imageSize / 100) * cutoutScale * qrCode.size,
+      qrCode.size,
+    );
+    const cutoutHeight = getCenteredCutoutModuleCount(
+      (imageSize / 100 / embeddedImage.aspectRatio) * cutoutScale * qrCode.size,
+      qrCode.size,
+    );
+
+    return isQrCutoutWithinErrorCorrection(
+      cutoutWidth,
+      cutoutHeight,
+      qrCode.size,
+      errorCorrectionLevel,
+    );
+  } catch {
+    return true;
+  }
+}
+
 function getLinkedCornerRounding(rounding: RoundingSettings) {
   const ratios = [
     rounding.cornerRingOuter / cornerRadiusMaximums.ringOuter,
@@ -206,6 +243,13 @@ export function QrConfigurator({ title }: Props) {
     imageSize,
   });
   const previewSvg = svg ? addAccessibleName(svg, t("generatedQrCode")) : null;
+  const isEmbeddedImageSafe = isQrImageSafe(
+    content,
+    errorCorrectionLevel,
+    embeddedImage,
+    imageSize,
+    imagePadding,
+  );
   // oxlint-disable-next-line react-perf/jsx-no-new-object-as-prop -- API React требует объект с SVG-разметкой.
   const previewSvgMarkup = previewSvg ? { __html: previewSvg } : null;
   function selectPreset(nextPresetName: PresetName) {
@@ -246,7 +290,7 @@ export function QrConfigurator({ title }: Props) {
     setSizeInput(value);
     const nextSize = Number(value);
 
-    if (Number.isInteger(nextSize) && nextSize >= 160 && nextSize <= 1024) {
+    if (Number.isInteger(nextSize) && nextSize >= svgSizeMinimum && nextSize <= svgSizeMaximum) {
       setSize(nextSize);
     }
   }
@@ -299,8 +343,8 @@ export function QrConfigurator({ title }: Props) {
                   <input
                     type="number"
                     aria-label={t("svgSize")}
-                    min={160}
-                    max={1024}
+                    min={svgSizeMinimum}
+                    max={svgSizeMaximum}
                     step={1}
                     value={sizeInput}
                     onChange={(event) => setSvgSizeInput(event.target.value)}
@@ -311,9 +355,9 @@ export function QrConfigurator({ title }: Props) {
               </span>
               <RangeControl
                 label={t("svgSize")}
-                min={160}
-                max={1024}
-                step={16}
+                min={svgSizeMinimum}
+                max={svgSizeMaximum}
+                step={8}
                 value={size}
                 onChange={setSvgSize}
               />
@@ -473,6 +517,12 @@ export function QrConfigurator({ title }: Props) {
 
         <div className={styles.outputColumn}>
           <section className={styles.preview} aria-label={t("preview")}>
+            {!isEmbeddedImageSafe ? (
+              <div className={styles.integrityWarning} role="alert">
+                <IconAlertTriangle size={20} stroke={1.8} aria-hidden="true" />
+                <p>{t("qrMayBeUnreadableReduceImageOrIncreaseCorrection")}</p>
+              </div>
+            ) : null}
             {previewSvgMarkup ? (
               <div className={styles.qrCode} dangerouslySetInnerHTML={previewSvgMarkup} />
             ) : (

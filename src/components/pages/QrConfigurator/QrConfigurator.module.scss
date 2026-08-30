@@ -368,6 +368,31 @@
   padding: 20px;
   overflow: hidden;
 }
+.integrityWarning {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 20px;
+  inset-inline: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid #fecdd3;
+  border-radius: 8px;
+  background: #fff1f2;
+  color: #881337;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 8%);
+}
+.integrityWarning svg {
+  flex: none;
+  color: #be123c;
+}
+.integrityWarning p {
+  margin: 0;
+}
 .qrCode {
   display: contents;
 }
@@ -491,6 +516,10 @@
   .downloadButton {
     inset-block-end: 24px;
     inset-inline-end: 24px;
+  }
+  .integrityWarning {
+    inset-block-start: 24px;
+    inset-inline: 24px;
   }
   .exportControls {
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);

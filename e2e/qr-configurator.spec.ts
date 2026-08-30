@@ -34,11 +34,20 @@ test("показывает выбранный размер SVG в предела
   await expect(qrCode).toHaveAttribute("height", "433");
 
   const size = page.getByRole("slider", { name: "SVG size" });
+  await size.press("Home");
+
+  await expect(exactSize).toHaveValue("100");
+  await expect(qrCode).toHaveAttribute("width", "100");
+  await expect(qrCode).toHaveAttribute("height", "100");
+
+  await size.press("ArrowRight");
+  await expect(exactSize).toHaveValue("108");
+
   await size.press("End");
 
-  await expect(exactSize).toHaveValue("1024");
-  await expect(qrCode).toHaveAttribute("width", "1024");
-  await expect(qrCode).toHaveAttribute("height", "1024");
+  await expect(exactSize).toHaveValue("2048");
+  await expect(qrCode).toHaveAttribute("width", "2048");
+  await expect(qrCode).toHaveAttribute("height", "2048");
   await expect
     .poll(() =>
       qrCode.evaluate((image) => ({
@@ -47,14 +56,14 @@ test("показывает выбранный размер SVG в предела
         containerWidth: image.closest("section")!.getBoundingClientRect().width,
       })),
     )
-    .toMatchObject({ declaredWidth: "1024" });
+    .toMatchObject({ declaredWidth: "2048" });
 
   const { displayedWidth, containerWidth } = await qrCode.evaluate((image) => ({
     displayedWidth: image.getBoundingClientRect().width,
     containerWidth: image.closest("section")!.getBoundingClientRect().width,
   }));
   expect(displayedWidth).toBeLessThanOrEqual(containerWidth);
-  expect(displayedWidth).toBeLessThan(1024);
+  expect(displayedWidth).toBeLessThan(2048);
 
   const bounds = await qrCode.evaluate((image) => {
     const imageBounds = image.getBoundingClientRect();
@@ -139,6 +148,29 @@ test("добавляет изображение с вырезом и скачи�
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download SVG" }).click();
   expect((await download).suggestedFilename()).toBe("qr-code.svg");
+});
+
+test("предупреждает, когда изображение превышает возможности коррекции матрицы", async ({
+  page,
+}) => {
+  await page.goto("/");
+
+  await page.getByLabel("Upload image").setInputFiles({
+    name: "wide-logo.svg",
+    mimeType: "image/svg+xml",
+    buffer: Buffer.from(
+      '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100"><rect width="200" height="100" fill="red"/></svg>',
+    ),
+  });
+
+  const warning = page.getByRole("alert");
+  await expect(warning).not.toBeVisible();
+
+  await page.getByRole("slider", { name: "Image size" }).press("End");
+  await expect(warning).toContainText("This QR code may be unreadable");
+
+  await page.getByRole("slider", { name: "Error correction level" }).press("ArrowRight");
+  await expect(warning).not.toBeVisible();
 });
 
 test("выбирает уровень коррекции ошибок на дискретном слайдере", async ({ page }) => {

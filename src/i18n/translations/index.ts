@@ -79,6 +79,11 @@ export const translations: TranslationTree = {
     ru: "Не удалось создать QR-код. Попробуйте сократить содержимое.",
     ar: "تعذر إنشاء رمز QR. جرّب محتوى أقصر.",
   },
+  qrMayBeUnreadableReduceImageOrIncreaseCorrection: {
+    en: "This QR code may be unreadable: the center image covers too many modules. Reduce the image size or padding, or increase error correction.",
+    ru: "QR-код может не считываться: изображение перекрывает слишком много модулей. Уменьшите размер изображения или отступ либо повысьте коррекцию ошибок.",
+    ar: "قد يتعذر مسح رمز QR: تغطي الصورة المركزية وحدات كثيرة جدًا. قلّل حجم الصورة أو هامشها، أو ارفع مستوى تصحيح الخطأ.",
+  },
   exportSettings: { en: "Export settings", ru: "Настройки экспорта", ar: "إعدادات التصدير" },
   downloadSvg: { en: "Download SVG", ru: "Скачать SVG", ar: "تنزيل SVG" },
   canvas: { en: "Canvas", ru: "Холст", ar: "اللوحة" },
