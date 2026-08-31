@@ -24,6 +24,17 @@ export function QrAppearanceControls({ color, size, onColorChange, onSizeChange 
 
   return (
     <FormFieldset legend={t("appearance")} isLegendVisuallyHidden>
+      <NumberSliderField
+        name="size"
+        sliderName="sizeSlider"
+        label={t("svgSize")}
+        value={size}
+        min={svgSizeMinimum}
+        max={svgSizeSliderMaximum}
+        step={4}
+        suffix="px"
+        onChange={onSizeChange}
+      />
       <FormFieldset legend={t("qrColor")}>
         <Tabs.Root
           className={styles.tabsRoot}
@@ -73,17 +84,6 @@ export function QrAppearanceControls({ color, size, onColorChange, onSizeChange 
           </Tabs.Panel>
         </Tabs.Root>
       </FormFieldset>
-      <NumberSliderField
-        name="size"
-        sliderName="sizeSlider"
-        label={t("svgSize")}
-        value={size}
-        min={svgSizeMinimum}
-        max={svgSizeSliderMaximum}
-        step={4}
-        suffix="px"
-        onChange={onSizeChange}
-      />
     </FormFieldset>
   );
 }
