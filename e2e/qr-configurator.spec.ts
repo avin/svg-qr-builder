@@ -134,7 +134,7 @@ test("восстанавливает параметры формы и выбра
   await page.goto("/");
 
   await page.getByLabel("Payload").fill("https://example.com/persisted");
-  await page.getByLabel("QR color").fill("#c026d3");
+  await page.getByRole("textbox", { name: "QR color" }).fill("#c026d3");
   await page.getByRole("spinbutton", { name: "SVG size" }).fill("612");
   await page.getByRole("checkbox", { name: "Enabled" }).check();
   await page
@@ -161,7 +161,7 @@ test("восстанавливает параметры формы и выбра
   await page.reload();
 
   await expect(page.getByLabel("Payload")).toHaveValue("https://example.com/persisted");
-  await expect(page.getByLabel("QR color")).toHaveValue("#c026d3");
+  await expect(page.getByRole("textbox", { name: "QR color" })).toHaveValue("#c026d3");
   await expect(page.getByRole("spinbutton", { name: "SVG size" })).toHaveValue("612");
   await expect(page.getByRole("checkbox", { name: "Enabled" })).toBeChecked();
   await expect(
@@ -178,13 +178,44 @@ test("восстанавливает параметры формы и выбра
 test("применяет выбранный цвет к QR-коду", async ({ page }) => {
   await page.goto("/");
 
-  const qrColor = page.getByLabel("QR color");
+  const qrColor = page.getByRole("textbox", { name: "QR color" });
   const qrPath = page.getByRole("img", { name: "Generated QR code" }).locator("path").first();
 
   await qrColor.fill("#c026d3");
 
   await expect(qrColor).toHaveValue("#c026d3");
   await expect(qrPath).toHaveCSS("fill", "rgb(192, 38, 211)");
+});
+
+test("настраивает градиент QR-кода и его направление", async ({ page }) => {
+  await page.goto("/");
+
+  await page
+    .getByRole("tablist", { name: "QR color" })
+    .getByRole("tab", { name: "Gradient" })
+    .click();
+
+  const startColor = page.getByLabel("Start color");
+  const endColor = page.getByLabel("End color");
+  const direction = page.getByRole("slider", { name: "Gradient direction dial" });
+  const qrCode = page.getByRole("img", { name: "Generated QR code" });
+
+  await startColor.fill("#ff0000");
+  await endColor.fill("#0000ff");
+  await direction.press("Home");
+  await direction.press("ArrowRight");
+
+  await expect(direction).toHaveAttribute("aria-valuetext", "1°");
+  await expect(qrCode.locator("linearGradient")).toHaveCount(1);
+  await expect(qrCode.locator("linearGradient stop").first()).toHaveAttribute(
+    "stop-color",
+    "#ff0000",
+  );
+  await expect(qrCode.locator("linearGradient stop").last()).toHaveAttribute(
+    "stop-color",
+    "#0000ff",
+  );
+  await expect(qrCode.locator(":scope > g")).toHaveAttribute("fill", "url(#qr-gradient)");
 });
 
 test("показывает выбранный размер SVG в пределах контейнера", async ({ page }) => {

@@ -7,7 +7,13 @@ function createSettings(): QrSettings {
   return {
     content: "https://example.com/saved",
     errorCorrectionLevel: "H",
-    fill: "#123456",
+    color: {
+      mode: "gradient",
+      solid: "#123456",
+      gradientStart: "#abcdef",
+      gradientEnd: "#654321",
+      gradientAngle: 135,
+    },
     size: 712,
     presetName: "custom",
     dataRoundingMode: "manual",
@@ -80,24 +86,47 @@ describe("хранение настроек QR-конфигуратора", () =
   });
 
   it.each([
-    ["неверной версии", { version: 2, settings: createSettings() }],
-    ["неполной структуре", { version: 1, settings: { content: "test" } }],
-    ["недопустимом размере", { version: 1, settings: { ...createSettings(), size: -1 } }],
+    ["неверной версии", { version: 3, settings: createSettings() }],
+    ["неполной структуре", { version: 2, settings: { content: "test" } }],
+    ["недопустимом размере", { version: 2, settings: { ...createSettings(), size: -1 } }],
     [
       "недопустимом отступе",
       {
-        version: 1,
+        version: 2,
         settings: {
           ...createSettings(),
           export: { ...createSettings().export, padding: 1000 },
         },
       },
     ],
-    ["недопустимом цвете", { version: 1, settings: { ...createSettings(), fill: "red<rect" } }],
+    [
+      "недопустимом цвете",
+      {
+        version: 2,
+        settings: {
+          ...createSettings(),
+          color: { ...createSettings().color, gradientEnd: "red<rect" },
+        },
+      },
+    ],
   ])("использует начальные параметры при %s", (_name, storedValue) => {
     localStorage.setItem("svgQrBuilder.settings", JSON.stringify(storedValue));
 
     expect(loadQrSettings()).toEqual(initialSettings);
+  });
+
+  it("переносит простой цвет из настроек предыдущей версии", () => {
+    const legacySettings: Partial<QrSettings> = { ...createSettings() };
+    delete legacySettings.color;
+    localStorage.setItem(
+      "svgQrBuilder.settings",
+      JSON.stringify({ version: 1, settings: { ...legacySettings, fill: "#c026d3" } }),
+    );
+
+    expect(loadQrSettings().color).toEqual({
+      ...initialSettings.color,
+      solid: "#c026d3",
+    });
   });
 
   it("не бросает ошибку, если хранилище недоступно", () => {

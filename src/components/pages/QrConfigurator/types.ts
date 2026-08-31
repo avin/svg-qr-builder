@@ -6,6 +6,16 @@ export type PresetName = BuiltInPresetName | "custom";
 
 export type RoundingMode = "linked" | "manual";
 
+export type QrColorMode = "solid" | "gradient";
+
+export interface QrColorSettings {
+  mode: QrColorMode;
+  solid: string;
+  gradientStart: string;
+  gradientEnd: string;
+  gradientAngle: number;
+}
+
 export interface RoundingSettings {
   dataOuter: number;
   dataInner: number;
@@ -32,7 +42,7 @@ export interface ExportSettings {
 export interface QrSettings {
   content: string;
   errorCorrectionLevel: ErrorCorrectionLevel;
-  fill: string;
+  color: QrColorSettings;
   size: number;
   presetName: PresetName;
   dataRoundingMode: RoundingMode;

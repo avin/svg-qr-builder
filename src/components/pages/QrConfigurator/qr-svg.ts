@@ -1,6 +1,30 @@
 import { QRCode, QRSvg } from "sexy-qr";
 import { getCenteredCutoutModuleCount, isQrCutoutWithinErrorCorrection } from "./qr-cutout";
-import type { ErrorCorrectionLevel, ExportSettings, RoundingSettings } from "./types";
+import type {
+  ErrorCorrectionLevel,
+  ExportSettings,
+  QrColorSettings,
+  RoundingSettings,
+} from "./types";
+
+function getGradientCoordinates(angle: number, size: number) {
+  const radians = (angle * Math.PI) / 180;
+  const directionX = Math.sin(radians);
+  const directionY = -Math.cos(radians);
+  const extent = (size / 2) * (Math.abs(directionX) + Math.abs(directionY));
+  const center = size / 2;
+
+  return {
+    x1: center - directionX * extent,
+    y1: center - directionY * extent,
+    x2: center + directionX * extent,
+    y2: center + directionY * extent,
+  };
+}
+
+function formatCoordinate(value: number) {
+  return Number(value.toFixed(3));
+}
 
 export function addAccessibleName(svg: string, label: string) {
   const escapedLabel = label
@@ -15,7 +39,7 @@ export function addAccessibleName(svg: string, label: string) {
 export function createQrSvg(
   content: string,
   errorCorrectionLevel: ErrorCorrectionLevel,
-  fill: string,
+  color: QrColorSettings,
   size: number,
   rounding: RoundingSettings,
   exportSettings: ExportSettings,
@@ -50,8 +74,10 @@ export function createQrSvg(
       };
     }
 
+    const isGradient = color.mode === "gradient";
+    const qrFill = isGradient ? "url(#qr-gradient)" : color.solid;
     const qrSvg = new QRSvg(qrCode, {
-      fill,
+      fill: qrFill,
       size: qrSize,
       outerCornerRadius: rounding.dataOuter,
       innerCornerRadius: rounding.dataInner,
@@ -69,8 +95,14 @@ export function createQrSvg(
     const background = exportSettings.isBackgroundEnabled
       ? `<rect width="100%" height="100%" fill="${exportSettings.background}"/>`
       : "";
+    let definitions = "";
 
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${background}<g fill="${fill}" transform="translate(${outerPadding} ${outerPadding})">${svgContent}</g></svg>`;
+    if (isGradient) {
+      const { x1, y1, x2, y2 } = getGradientCoordinates(color.gradientAngle, qrSize);
+      definitions = `<defs><linearGradient id="qr-gradient" gradientUnits="userSpaceOnUse" x1="${formatCoordinate(x1)}" y1="${formatCoordinate(y1)}" x2="${formatCoordinate(x2)}" y2="${formatCoordinate(y2)}"><stop offset="0" stop-color="${color.gradientStart}"/><stop offset="1" stop-color="${color.gradientEnd}"/></linearGradient></defs>`;
+    }
+
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">${definitions}${background}<g fill="${qrFill}" transform="translate(${outerPadding} ${outerPadding})">${svgContent}</g></svg>`;
   } catch {
     return null;
   }

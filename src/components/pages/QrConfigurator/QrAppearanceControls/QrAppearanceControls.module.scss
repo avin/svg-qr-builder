@@ -1,0 +1,76 @@
+@use "@/styles/kit" as *;
+
+.tabs {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 3px;
+  border-radius: 8px;
+  background: $colors-gray-100;
+}
+
+.tabsRoot {
+  display: grid;
+  gap: 14px;
+}
+
+.tab {
+  position: relative;
+  z-index: 1;
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 6px;
+  outline: 0;
+  background: transparent;
+  color: $colors-gray-600;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.tab[data-selected] {
+  color: $colors-base-black;
+}
+
+.tab:focus-visible {
+  box-shadow: inset 0 0 0 2px $colors-gray-700;
+}
+
+.tabIndicator {
+  position: absolute;
+  inset-block: 3px;
+  left: var(--active-tab-left);
+  box-sizing: border-box;
+  width: var(--active-tab-width);
+  border: 1px solid $colors-gray-200;
+  border-radius: 6px;
+  background: $colors-base-white;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 6%);
+  transition:
+    left 160ms ease,
+    width 160ms ease;
+}
+
+.gradientControls {
+  display: grid;
+  gap: 14px;
+}
+
+.gradientColors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+@media (max-width: 359px) {
+  .gradientColors {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tabIndicator {
+    transition: none;
+  }
+}

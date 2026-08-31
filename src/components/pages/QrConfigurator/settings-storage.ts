@@ -2,7 +2,7 @@ import { cornerRadiusMaximums, initialSettings, svgSizeMinimum } from "./setting
 import type { EmbeddedImage, QrSettings } from "./types";
 
 const storageKey = "svgQrBuilder.settings";
-const storageVersion = 1;
+const storageVersion = 2;
 
 export const maximumStoredImageBytes = 1024 * 1024;
 
@@ -40,17 +40,28 @@ function isEmbeddedImage(value: unknown): value is EmbeddedImage | null {
 }
 
 function isQrSettings(value: unknown): value is QrSettings {
-  if (!isRecord(value) || !isRecord(value.rounding) || !isRecord(value.export)) {
+  if (
+    !isRecord(value) ||
+    !isRecord(value.color) ||
+    !isRecord(value.rounding) ||
+    !isRecord(value.export)
+  ) {
     return false;
   }
 
+  const color = value.color;
   const rounding = value.rounding;
   const exportSettings = value.export;
 
   return (
     typeof value.content === "string" &&
     ["L", "M", "Q", "H"].includes(value.errorCorrectionLevel as string) &&
-    isHexColor(value.fill) &&
+    ["solid", "gradient"].includes(color.mode as string) &&
+    isHexColor(color.solid) &&
+    isHexColor(color.gradientStart) &&
+    isHexColor(color.gradientEnd) &&
+    Number.isInteger(color.gradientAngle) &&
+    isNumberInRange(color.gradientAngle, 0, 359) &&
     Number.isInteger(value.size) &&
     isNumberInRange(value.size, svgSizeMinimum) &&
     ["square", "rounded", "custom"].includes(value.presetName as string) &&
@@ -68,6 +79,31 @@ function isQrSettings(value: unknown): value is QrSettings {
     isNumberInRange(exportSettings.imagePadding, 0, 20) &&
     isNumberInRange(exportSettings.imageSize, 8, 50)
   );
+}
+
+function migrateStoredSettings(value: unknown): unknown {
+  if (!isRecord(value) || value.version !== 1 || !isRecord(value.settings)) {
+    return value;
+  }
+
+  const settings = value.settings;
+
+  if (!isHexColor(settings.fill)) {
+    return value;
+  }
+
+  const { fill, ...rest } = settings;
+
+  return {
+    version: storageVersion,
+    settings: {
+      ...rest,
+      color: {
+        ...initialSettings.color,
+        solid: fill,
+      },
+    },
+  };
 }
 
 function getBase64PayloadSize(dataUrl: string) {
@@ -108,7 +144,7 @@ export function loadQrSettings(): QrSettings {
       return initialSettings;
     }
 
-    const parsedValue: unknown = JSON.parse(storedValue);
+    const parsedValue: unknown = migrateStoredSettings(JSON.parse(storedValue));
 
     if (
       !isRecord(parsedValue) ||

@@ -17,7 +17,7 @@ export function QrConfigurator() {
   const {
     content,
     errorCorrectionLevel,
-    fill,
+    color,
     size,
     presetName,
     dataRoundingMode,
@@ -25,7 +25,7 @@ export function QrConfigurator() {
     rounding,
   } = settings;
   const exportSettings = settings.export;
-  const svg = createQrSvg(content, errorCorrectionLevel, fill, size, rounding, exportSettings);
+  const svg = createQrSvg(content, errorCorrectionLevel, color, size, rounding, exportSettings);
   const isEmbeddedImageSafe = isQrImageSafe(content, errorCorrectionLevel, exportSettings);
 
   useEffect(() => {
@@ -61,9 +61,9 @@ export function QrConfigurator() {
             }
           />
           <QrAppearanceControls
-            fill={fill}
+            color={color}
             size={size}
-            onFillChange={(nextFill) => updateSettings({ fill: nextFill })}
+            onColorChange={(nextColor) => updateSettings({ color: nextColor })}
             onSizeChange={(nextSize) => updateSettings({ size: nextSize })}
           />
           <QrRoundingControls

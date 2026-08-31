@@ -11,7 +11,7 @@ describe("генерация SVG QR-кода", () => {
     const markup = createQrSvg(
       "https://example.com",
       "M",
-      "#123456",
+      { ...initialSettings.color, solid: "#123456" },
       320,
       initialSettings.rounding,
       initialSettings.export,
@@ -30,7 +30,7 @@ describe("генерация SVG QR-кода", () => {
     const markup = createQrSvg(
       "https://example.com",
       "H",
-      "#111111",
+      { ...initialSettings.color, solid: "#111111" },
       200,
       initialSettings.rounding,
       {
@@ -65,12 +65,40 @@ describe("генерация SVG QR-кода", () => {
       createQrSvg(
         "x".repeat(100_000),
         "L",
-        "#000000",
+        initialSettings.color,
         320,
         initialSettings.rounding,
         initialSettings.export,
       ),
     ).toBeNull();
+  });
+
+  it("создаёт единый линейный градиент в направлении выбранного угла", () => {
+    const markup = createQrSvg(
+      "https://example.com",
+      "M",
+      {
+        mode: "gradient",
+        solid: "#111111",
+        gradientStart: "#ff0000",
+        gradientEnd: "#0000ff",
+        gradientAngle: 90,
+      },
+      320,
+      initialSettings.rounding,
+      initialSettings.export,
+    );
+
+    const svg = parseSvg(markup!);
+    const gradient = svg.querySelector("linearGradient")!;
+    expect(gradient.getAttribute("gradientUnits")).toBe("userSpaceOnUse");
+    expect(gradient.getAttribute("x1")).toBe("0");
+    expect(gradient.getAttribute("y1")).toBe("160");
+    expect(gradient.getAttribute("x2")).toBe("320");
+    expect(gradient.getAttribute("y2")).toBe("160");
+    expect(gradient.querySelectorAll("stop")[0].getAttribute("stop-color")).toBe("#ff0000");
+    expect(gradient.querySelectorAll("stop")[1].getAttribute("stop-color")).toBe("#0000ff");
+    expect(svg.querySelector(":scope > g")?.getAttribute("fill")).toBe("url(#qr-gradient)");
   });
 });
 

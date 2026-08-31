@@ -29,7 +29,13 @@ const presetSettings: Record<BuiltInPresetName, RoundingSettings> = {
 export const initialSettings: QrSettings = {
   content: "https://avin.github.io/sexy-qr",
   errorCorrectionLevel: "M",
-  fill: "#212121",
+  color: {
+    mode: "solid",
+    solid: "#212121",
+    gradientStart: "#7c3aed",
+    gradientEnd: "#06b6d4",
+    gradientAngle: 90,
+  },
   size: 360,
   presetName: "rounded",
   dataRoundingMode: "linked",
