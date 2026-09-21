@@ -1,0 +1,112 @@
+@use "@/styles/kit" as *;
+
+.section {
+  box-sizing: border-box;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding: 0 16px 64px;
+}
+
+.intro,
+.guide,
+.faq {
+  max-width: 760px;
+}
+
+.intro h2,
+.guide h2,
+.faq h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  letter-spacing: -0.025em;
+}
+
+.intro p,
+.features p,
+.guide li,
+.faq p {
+  line-height: 1.65;
+  color: $colors-gray-700;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: $colors-gray-600;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.features {
+  display: grid;
+  gap: 16px;
+  margin: 32px 0 48px;
+}
+
+.features article {
+  padding: 20px;
+  border: 1px solid $colors-gray-200;
+  border-radius: 12px;
+  background: $colors-base-white;
+}
+
+.features h3 {
+  margin: 0 0 8px;
+  font-size: 1.0625rem;
+}
+
+.features p {
+  margin: 0;
+}
+
+.guide {
+  margin-bottom: 48px;
+}
+
+.guide ol {
+  margin: 0;
+  padding-inline-start: 24px;
+}
+
+.guide li + li {
+  margin-top: 6px;
+}
+
+.faq details {
+  border-top: 1px solid $colors-gray-300;
+}
+
+.faq details:last-of-type {
+  border-bottom: 1px solid $colors-gray-300;
+}
+
+.faq summary {
+  padding: 16px 0;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.faq p {
+  margin: -6px 0 16px;
+}
+
+.footer {
+  margin: 32px 0 0;
+  color: $colors-gray-600;
+  font-size: 0.875rem;
+}
+
+.footer a {
+  color: inherit;
+}
+
+@media (min-width: 768px) {
+  .section {
+    padding: 0 24px 96px;
+  }
+
+  .features {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

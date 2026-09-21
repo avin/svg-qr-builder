@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://avin.github.io/svg-qr-builder/sitemap.xml

@@ -8,6 +8,7 @@ import { languageDirections } from "@/i18n/languages";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { changeSelectedLanguage } from "@/store/locale/localeSlice";
 import { languageSelector } from "@/store/locale/selectors";
+import { SeoContent } from "../SeoContent/SeoContent";
 import styles from "./App.module.scss";
 
 const languageLabelKeys = {
@@ -76,6 +77,7 @@ export function App() {
           <LanguageSelector />
         </header>
         <QrConfigurator />
+        <SeoContent />
       </main>
     </DirectionProvider>
   );

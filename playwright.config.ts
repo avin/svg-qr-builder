@@ -1,5 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
+const devServerPort = process.env.PORT || "8888";
+const baseURL = `https://localhost:${devServerPort}`;
+
 export default defineConfig({
   testDir: "./e2e",
 
@@ -15,13 +18,13 @@ export default defineConfig({
 
   webServer: {
     command: "npm run dev",
-    url: "https://localhost:8888",
+    url: baseURL,
     ignoreHTTPSErrors: true,
     reuseExistingServer: !process.env.CI,
   },
 
   use: {
-    baseURL: "https://localhost:8888",
+    baseURL,
 
     ignoreHTTPSErrors: true,
 

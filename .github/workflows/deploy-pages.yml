@@ -59,3 +59,10 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v5
+
+      - name: Notify search engines through IndexNow
+        run: |
+          curl --fail-with-body --retry 2 --get "https://api.indexnow.org/indexnow" \
+            --data-urlencode "url=https://avin.github.io/svg-qr-builder/" \
+            --data-urlencode "key=7e6f2f7705db47d7a0c4de9c4b8ebfd8" \
+            --data-urlencode "keyLocation=https://avin.github.io/svg-qr-builder/7e6f2f7705db47d7a0c4de9c4b8ebfd8.txt"
